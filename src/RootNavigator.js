@@ -5,14 +5,14 @@ import Details from "./components/Details";
 const Routes = createStackNavigator({
   contacts: {
     screen: Contacts,
-    navigationOptions:{
-      title:'Contact'
+    navigationOptions: {
+      title: "Contact"
     }
   },
   details: {
     screen: Details,
-    navigationOptions:{
-      title:'Details'
+    navigationOptions: {
+      title: "Details"
     }
   }
 });

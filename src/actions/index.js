@@ -1,7 +1,6 @@
-export const selectContact = (contact) => {
+export const selectContact = contact => {
   return {
-      type:'select_contact',
-      payload:contact
+    type: "select_contact",
+    payload: contact
   };
-
 };
