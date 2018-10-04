@@ -15,7 +15,7 @@ class Contacts  extends Component {
             <FlatList
              data={this.props.contacts}
              renderItem = {this.renderContact}
-             keyExtractor={item => item.id}
+             keyExtractor={item => item.id.toString()}
              />
             </View>
         );
