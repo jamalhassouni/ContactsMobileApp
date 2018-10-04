@@ -1,8 +1,8 @@
-import { StackNavigator } from "react-navigation";
+import { createStackNavigator } from "react-navigation";
 import Contacts from "./components/Contacts";
 import Details from "./components/Details";
 
-const Routes = StackNavigator({
+const Routes = createStackNavigator({
   contacts: {
     screen: Contacts,
     navigationOptions:{
