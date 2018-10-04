@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { Text, StyleSheet, View ,FlatList,TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
-
+import  * as action  from '../actions';
 class Contacts  extends Component {
 
    onContactSelected = (contact) =>{
-   console.log(contact);
+     this.props.selectContact(contact);
+     this.props.navigation.navigate('details');
 
    }
    renderContact = ({item}) =>{
@@ -58,4 +59,4 @@ const  mapStateToProps = state =>{
    };
 };
 
-export default connect(mapStateToProps)(Contacts);
+export default connect(mapStateToProps,action)(Contacts);
