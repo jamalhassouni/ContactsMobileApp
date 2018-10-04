@@ -10,7 +10,10 @@ const Routes = createStackNavigator({
     }
   },
   details: {
-    screen: Details
+    screen: Details,
+    navigationOptions:{
+      title:'Details'
+    }
   }
 });
 
