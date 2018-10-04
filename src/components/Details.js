@@ -1,27 +1,32 @@
 import React, { Component } from 'react';
 import { View, Text,StyleSheet } from 'react-native';
+import {connect} from 'react-redux';
 import {Card,CardItem,Button} from './common';
-export default class Details extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-    };
-  }
 
+
+ class Details extends Component {
+   callContact = () => {
+    const phone = this.props.contact.phone;
+    console.log(`Calling ${phone}`);
+   }
+   textContact = () =>{
+    const phone = this.props.contact.phone;
+    console.log(`Messaging ${phone}`);
+   }
   render() {
     return (
      <Card>
        <CardItem>
          <View style={styles.container}>
-         <Text style={styles.name}>Contact Name</Text>
+         <Text style={styles.name}>{this.props.contact.name}</Text>
          </View>
        </CardItem>
        <CardItem>
          <View style={styles.buttons}>
-          <Button>Call</Button>
+          <Button onPress={this.callContact}>Call</Button>
          </View>
          <View style={styles.buttons}>
-          <Button>Text</Button>
+          <Button onPress={this.textContact}>Text</Button>
          </View>
        </CardItem>
      </Card>
@@ -46,3 +51,10 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
    }
 });
+
+const mapStateToProp = state =>{
+   return {
+      contact:state.selection.contact
+   };
+}
+export default  connect(mapStateToProp)(Details);
