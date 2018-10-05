@@ -1,25 +1,18 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import  {createStore} from 'redux';
-import  {Provider} from 'react-redux';
-import  reducer from './reducers';
+import { createStore } from "redux";
+import { Provider } from "react-redux";
+import reducer from "./reducers";
 
 import Routes from "./RootNavigator";
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
   render() {
     return (
-        <Provider store={createStore(reducer)}>
+      <Provider store={createStore(reducer)}>
         <Routes />
-        </Provider>
+      </Provider>
     );
   }
 }
-
 
 export default App;

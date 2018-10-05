@@ -5,12 +5,12 @@ import { Card, CardItem, Button } from "./common";
 
 class Details extends Component {
   callContact = () => {
-    const phone = this.props.contact.phone;
+    const phone = this.props.contact.phoneNumbers[0].number;
     const url = `tel:${phone}`;
     this.lanuchUrl(url);
   };
   textContact = () => {
-    const phone = this.props.contact.phone;
+    const phone = this.props.contact.phoneNumbers[0].number;
     const url = `sms:${phone}`;
     this.lanuchUrl(url);
   };
@@ -29,7 +29,11 @@ class Details extends Component {
       <Card>
         <CardItem>
           <View style={styles.container}>
-            <Text style={styles.name}>{this.props.contact.name}</Text>
+            <Text style={styles.name}>
+              {this.props.contact.givenName +
+                " " +
+                this.props.contact.familyName}
+            </Text>
           </View>
         </CardItem>
         <CardItem>

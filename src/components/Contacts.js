@@ -14,11 +14,13 @@ class Contacts extends Component {
     this.props.navigation.navigate("details");
   };
   renderContact = ({ item }) => {
+    let FullName = item.givenName + " " + item.familyName;
+    let phone = item.phoneNumbers[0].number;
     return (
       <View style={styles.contact}>
         <TouchableOpacity onPress={this.onContactSelected.bind(this, item)}>
-          <Text style={styles.name}>{item.name}</Text>
-          <Text style={styles.phone}>{item.phone}</Text>
+          <Text style={styles.name}>{FullName}</Text>
+          <Text style={styles.phone}>{phone}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -29,7 +31,7 @@ class Contacts extends Component {
         <FlatList
           data={this.props.contacts}
           renderItem={this.renderContact}
-          keyExtractor={item => item.id.toString()}
+          keyExtractor={(item, index) => index.toString()}
         />
       </View>
     );
