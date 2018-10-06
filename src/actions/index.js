@@ -4,3 +4,10 @@ export const selectContact = contact => {
     payload: contact
   };
 };
+
+export const fetchContact = contacts => {
+  return {
+    type: "FETCHING",
+    payload: contacts
+  };
+};
