@@ -4,18 +4,39 @@ import {
   StyleSheet,
   View,
   FlatList,
-  TouchableOpacity
+  TouchableOpacity,
+  RefreshControl
 } from "react-native";
 import { connect } from "react-redux";
 import * as action from "../actions";
-class Contacts extends Component {
+class ContactsComponents extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      refreshing: false
+    };
+  }
+  _refreshListView = () => {};
+  _onRefresh = () => {
+    //Start Rendering Spinner
+    this.setState({ refreshing: true });
+    console.log(this.props.contacts);
+    console.log("refreshing...");
+    console.log("updated...");
+    console.log(this.props.contacts);
+    this.setState({ refreshing: false }); //Stop Rendering Spinner
+  };
+
   onContactSelected = contact => {
     this.props.selectContact(contact);
     this.props.navigation.navigate("details");
   };
   renderContact = ({ item }) => {
-    let FullName = item.givenName + " " + item.familyName;
-    let phone = item.phoneNumbers[0].number;
+    const middleName = item.middleName || "";
+    const givenName = item.givenName || "";
+    const familyName = item.familyName || "";
+    const FullName = givenName + " " + middleName + " " + familyName;
+    const phone = item.phoneNumbers[0].number;
     return (
       <View style={styles.contact}>
         <TouchableOpacity onPress={this.onContactSelected.bind(this, item)}>
@@ -32,6 +53,12 @@ class Contacts extends Component {
           data={this.props.contacts}
           renderItem={this.renderContact}
           keyExtractor={(item, index) => index.toString()}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh}
+            />
+          }
         />
       </View>
     );
@@ -67,4 +94,4 @@ const mapStateToProps = state => {
 export default connect(
   mapStateToProps,
   action
-)(Contacts);
+)(ContactsComponents);

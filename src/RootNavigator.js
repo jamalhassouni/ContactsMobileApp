@@ -1,10 +1,10 @@
 import { createStackNavigator } from "react-navigation";
-import Contacts from "./components/Contacts";
+import ContactsComponents from "./components/Contacts";
 import Details from "./components/Details";
 
 const Routes = createStackNavigator({
   contacts: {
-    screen: Contacts,
+    screen: ContactsComponents,
     navigationOptions: {
       title: "Contact"
     }
