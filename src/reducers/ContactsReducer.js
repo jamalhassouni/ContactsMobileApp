@@ -41,4 +41,13 @@ async function requestContactsPermission() {
 }
 requestContactsPermission();
 
-export default () => contactsList;
+const INITIAL_STATE = { contacts: contactsList };
+
+export default (state = INITIAL_STATE, action) => {
+    switch (action.type) {
+        case 'FETCHING':
+            return { ...state, contacts: action.payload };
+        default:
+            return state;
+    }
+};
