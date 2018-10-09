@@ -25,15 +25,15 @@ class Details extends Component {
     });
   }
   render() {
+    const middleName = this.props.contact.middleName || "";
+    const givenName = this.props.contact.givenName || "";
+    const familyName = this.props.contact.familyName || "";
+    const FullName = givenName + " " + middleName + " " + familyName;
     return (
       <Card>
         <CardItem>
           <View style={styles.container}>
-            <Text style={styles.name}>
-              {this.props.contact.givenName +
-                " " +
-                this.props.contact.familyName}
-            </Text>
+            <Text style={styles.name}>{FullName}</Text>
           </View>
         </CardItem>
         <CardItem>
