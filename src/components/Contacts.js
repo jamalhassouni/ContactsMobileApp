@@ -50,7 +50,8 @@ class ContactsComponents extends Component {
     }
   };
   _onRefresh = () => {
-    this.props.getAllContacts();
+    this._fetchData();
+    // this.props.getAllContacts();
     this.props.navigation.setParams({
       label: (
         <Text style={{ marginRight: 10 }}>{this.props.countList} Contacts</Text>

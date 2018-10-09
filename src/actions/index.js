@@ -1,6 +1,3 @@
-import Contacts from "react-native-contacts";
-import { PermissionsAndroid, Platform } from "react-native";
-let contactsList = [];
 export const selectContact = contact => {
   return {
     type: "select_contact",
@@ -21,6 +18,7 @@ export const fetchContact = contacts => {
   };
 };
 
+/*
 async function requestContactsPermission() {
   if (Platform.OS == "android") {
     try {
@@ -57,3 +55,4 @@ export const getAllContacts = () => {
     });
   };
 };
+*/
