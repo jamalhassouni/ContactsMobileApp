@@ -7,6 +7,12 @@ export const selectContact = contact => {
     payload: contact
   };
 };
+export const RefreshList = () => {
+  return {
+    type: "refresh_list",
+    payload: null
+  };
+};
 
 export const fetchContact = contacts => {
   return {
@@ -46,6 +52,7 @@ export const getAllContacts = () => {
   return dispatch => {
     requestContactsPermission().then(() => {
       console.log("Contacts", contactsList);
+      dispatch({ type: 'refresh_list' });
       dispatch({ type: "getAll", payload: contactsList });
     });
   };
