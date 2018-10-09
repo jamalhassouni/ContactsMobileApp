@@ -18,7 +18,7 @@ class ContactsComponents extends Component {
       refreshing: false
     };
   }
-  componentWillMount() {
+  componentDidMount() {
     if (Platform.OS == "android") {
       PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
         title: "Contacts",
@@ -27,8 +27,14 @@ class ContactsComponents extends Component {
         .then(granted => {
           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
             Contacts.getAll((err, contacts) => {
-              console.log("liss", contacts);
               this.props.fetchContact(contacts);
+              this.props.navigation.setParams({
+                label: (
+                  <Text style={{ marginRight: 10 }}>
+                    {this.props.countList} Contacts
+                  </Text>
+                )
+              });
             });
           } else {
             // Handle
@@ -38,20 +44,25 @@ class ContactsComponents extends Component {
           console.log("PermissionsAndroid", err);
         });
     }
+    console.log("count", this.props.countList);
   }
 
   _onRefresh = () => {
-    //Start Rendering Spinner
-    this.setState({ refreshing: true });
     this.props.getAllContacts();
+    this.props.navigation.setParams({
+      label: (
+        <Text style={{ marginRight: 10 }}>{this.props.countList} Contacts</Text>
+      )
+    });
+    console.log("count refresh", this.props.countList);
     console.log("refreshing...");
-    this.setState({ refreshing: false }); //Stop Rendering Spinner
   };
 
   onContactSelected = contact => {
     this.props.selectContact(contact);
     this.props.navigation.navigate("details");
   };
+
   renderContact = ({ item }) => {
     const middleName = item.middleName || "";
     const givenName = item.givenName || "";
@@ -76,7 +87,7 @@ class ContactsComponents extends Component {
           keyExtractor={(item, index) => index.toString()}
           refreshControl={
             <RefreshControl
-              refreshing={this.state.refreshing}
+              refreshing={this.props.refreshing}
               onRefresh={this._onRefresh}
             />
           }
@@ -107,8 +118,11 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => {
+  console.log(state);
   return {
-    contacts: state.contacts.contacts
+    contacts: state.contacts.data,
+    countList: state.contacts.count,
+    refreshing: state.contacts.refreshing
   };
 };
 
