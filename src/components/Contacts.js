@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Contacts from "react-native-contacts";
 import {
   Text,
   StyleSheet,
@@ -17,33 +16,16 @@ class ContactsComponents extends Component {
       refreshing: false
     };
   }
-  _refreshListView = () => {};
+  componentWillMount() {
+    this.props.getAllContacts();
+  }
+
   _onRefresh = () => {
     //Start Rendering Spinner
-    let contactsList = [];
     this.setState({ refreshing: true });
-    console.log(this.props.contacts);
-
-    Contacts.getAll((err, contacts) => {
-      if (err) throw err;
-
-      // contacts returned
-      contacts.map(contact => {
-        const contactInfo = {
-          familyName: contact.familyName,
-          givenName: contact.givenName,
-          middleName: contact.middleName,
-          phoneNumbers: contact.phoneNumbers,
-          emailAddresses: contact.emailAddresses
-        };
-        contactsList.push(contactInfo);
-      });
-    });
+    this.props.getAllContacts();
     console.log("refreshing...");
-    console.log("updated...");
     console.log(this.props.contacts);
-    console.log("list ",contactsList);
-    this.props.fetchContact(contactsList);
     this.setState({ refreshing: false }); //Stop Rendering Spinner
   };
 
