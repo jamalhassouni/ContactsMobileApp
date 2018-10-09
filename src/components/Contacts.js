@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { PermissionsAndroid, Platform } from "react-native";
+import Contacts from "react-native-contacts";
 import {
   Text,
   StyleSheet,
@@ -17,7 +19,25 @@ class ContactsComponents extends Component {
     };
   }
   componentWillMount() {
-    this.props.getAllContacts();
+    if (Platform.OS == "android") {
+      PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
+        title: "Contacts",
+        message: "This app would like to view your contacts."
+      })
+        .then(granted => {
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            Contacts.getAll((err, contacts) => {
+              console.log("liss", contacts);
+              this.props.fetchContact(contacts);
+            });
+          } else {
+            // Handle
+          }
+        })
+        .catch(err => {
+          console.log("PermissionsAndroid", err);
+        });
+    }
   }
 
   _onRefresh = () => {
@@ -25,7 +45,6 @@ class ContactsComponents extends Component {
     this.setState({ refreshing: true });
     this.props.getAllContacts();
     console.log("refreshing...");
-    console.log(this.props.contacts);
     this.setState({ refreshing: false }); //Stop Rendering Spinner
   };
 
