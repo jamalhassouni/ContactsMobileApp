@@ -5,9 +5,10 @@ import Details from "./components/Details";
 const Routes = createStackNavigator({
   contacts: {
     screen: ContactsComponents,
-    navigationOptions: {
-      title: "Contact"
-    }
+    navigationOptions: ({ navigation }) => ( {
+      title: "Contact",
+      headerRight: navigation.getParam('label'),
+    })
   },
   details: {
     screen: Details,
