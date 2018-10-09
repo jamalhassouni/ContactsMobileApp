@@ -19,6 +19,10 @@ class ContactsComponents extends Component {
     };
   }
   componentDidMount() {
+    this._fetchData();
+  }
+
+  _fetchData = () => {
     if (Platform.OS == "android") {
       PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
         title: "Contacts",
@@ -44,9 +48,7 @@ class ContactsComponents extends Component {
           console.log("PermissionsAndroid", err);
         });
     }
-    console.log("count", this.props.countList);
-  }
-
+  };
   _onRefresh = () => {
     this.props.getAllContacts();
     this.props.navigation.setParams({
