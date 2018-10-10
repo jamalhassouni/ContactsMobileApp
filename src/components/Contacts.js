@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { PermissionsAndroid, Platform } from "react-native";
 import Contacts from "react-native-contacts";
 import {
-  StyleSheet,
   View,
   FlatList,
   ActivityIndicator,
@@ -24,6 +23,16 @@ class ContactsComponents extends Component {
     this._fetchData();
   }
 
+  uniqueList(list) {
+    list = list.filter(
+      (elm, index, self) =>
+        index ===
+        self.findIndex(
+          t => t.phoneNumbers[0].number === elm.phoneNumbers[0].number
+        )
+    );
+    return list.sort();
+  }
   _fetchData = () => {
     if (Platform.OS == "android") {
       PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
@@ -33,7 +42,7 @@ class ContactsComponents extends Component {
         .then(granted => {
           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
             Contacts.getAll((err, contacts) => {
-              this.props.fetchContact(contacts);
+              this.props.fetchContact(this.uniqueList(contacts));
               this.props.navigation.setParams({
                 label: `${this.props.countList} Contacts`
               });
@@ -86,10 +95,10 @@ class ContactsComponents extends Component {
     const data = _.filter(this.props.fullData, user => {
       return this._contains(user, formattedQuery);
     });
+    this.props.SearchContacts(data, text);
     this.props.navigation.setParams({
       label: `${this.props.countList} Contacts`
     });
-    this.props.SearchContacts(data, text);
     console.log(this.props.countList);
   };
   renderSeparator = () => {
@@ -123,12 +132,6 @@ class ContactsComponents extends Component {
     const phone = item.phoneNumbers[0].number;
     const avatar = item.thumbnailPath || null;
     return (
-      /* <View style={styles.contact}>
-        <TouchableOpacity onPress={this.onContactSelected.bind(this, item)}>
-          <Text style={styles.name}>{FullName}</Text>
-          <Text style={styles.phone}>{phone}</Text>
-        </TouchableOpacity>
-      </View>*/
       <ListItem
         onPress={this.onContactSelected.bind(this, item)}
         roundAvatar
@@ -176,26 +179,6 @@ class ContactsComponents extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  },
-  contact: {
-    flex: 1,
-    padding: 20,
-    borderColor: "#ddd",
-    borderBottomWidth: 1,
-    backgroundColor: "#fff"
-  },
-  name: {
-    fontSize: 16
-  },
-  phone: {
-    fontSize: 14,
-    color: "#ddd"
-  }
-});
 
 const mapStateToProps = state => {
   console.log("state", state);
