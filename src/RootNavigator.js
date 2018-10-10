@@ -10,18 +10,27 @@ const Routes = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       header: (
         <Header
-          leftComponent={{ text: "Contacts", style: { color: "#fff" } }}
+        statusBarProps={{ barStyle: 'light-content' }}
+        outerContainerStyles={{ backgroundColor: '#324C66' }}
           centerComponent={{ text: navigation.getParam('label'), style: { color: "#fff" } }}
-          rightComponent={{ icon: "home", color: "#fff" }}
+          rightComponent={{ icon: "home", color: "#fff",onPress:()=>{navigation.navigate('contacts') } }}
         />
       )
     })
   },
   details: {
     screen: Details,
-    navigationOptions: {
-      title: "Details"
-    }
+    navigationOptions: ({navigation}) =>({
+      title: "Details",
+      header: (
+        <Header
+        statusBarProps={{ barStyle: 'light-content' }}
+        outerContainerStyles={{ backgroundColor: '#324C66' }}
+          centerComponent={{ text: navigation.getParam('user'), style: { color: "#fff" } }}
+          rightComponent={{ icon: "home", color: "#fff",onPress:()=>{navigation.navigate('contacts') }}}
+        />
+      )
+    })
   }
 });
 

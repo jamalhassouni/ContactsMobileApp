@@ -2,8 +2,20 @@ import React, { Component } from "react";
 import { View, Text, StyleSheet, Linking, Alert } from "react-native";
 import { connect } from "react-redux";
 import { Card, CardItem, Button } from "./common";
-
+let middleName,givenName,familyName,FullName;
 class Details extends Component {
+ constructor(props){
+   super(props);
+    middleName = this.props.contact.middleName || "";
+    givenName = this.props.contact.givenName || "";
+    familyName = this.props.contact.familyName || "";
+    FullName = givenName + " " + middleName + " " + familyName;
+ }
+  componentDidMount() {
+    this.props.navigation.setParams({
+      user: `${FullName} `
+    });
+  }
   callContact = () => {
     const phone = this.props.contact.phoneNumbers[0].number;
     const url = `tel:${phone}`;
@@ -25,10 +37,6 @@ class Details extends Component {
     });
   }
   render() {
-    const middleName = this.props.contact.middleName || "";
-    const givenName = this.props.contact.givenName || "";
-    const familyName = this.props.contact.familyName || "";
-    const FullName = givenName + " " + middleName + " " + familyName;
     return (
       <Card>
         <CardItem>
