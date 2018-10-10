@@ -34,6 +34,9 @@ class ContactsComponents extends Component {
           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
             Contacts.getAll((err, contacts) => {
               this.props.fetchContact(contacts);
+              this.props.navigation.setParams({
+                label: `${this.props.countList} Contacts`
+              });
             });
           } else {
             // Handle
