@@ -17,7 +17,7 @@ export default (state = INITIAL_STATE, action) => {
         loading: false
       };
     case "refresh_list":
-      return { ...state, refreshing: true, query: "" };
+      return { ...state, refreshing: true, query: "" ,loading:false};
     case "searching":
       return {
         ...state,
