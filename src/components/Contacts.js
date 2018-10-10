@@ -31,7 +31,7 @@ class ContactsComponents extends Component {
           t => t.phoneNumbers[0].number === elm.phoneNumbers[0].number
         )
     );
-    return list.sort();
+    return list.sort((a, b) => a.givenName.localeCompare(b.givenName));
   }
   _fetchData = () => {
     if (Platform.OS == "android") {
