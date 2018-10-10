@@ -4,6 +4,7 @@ import Contacts from "react-native-contacts";
 import {
   View,
   FlatList,
+  StyleSheet,
   ActivityIndicator,
   SafeAreaView,
   RefreshControl
@@ -11,7 +12,31 @@ import {
 import { connect } from "react-redux";
 import _ from "lodash";
 import * as action from "../actions";
-import { List, ListItem, SearchBar } from "react-native-elements";
+import {
+  List,
+  ListItem,
+  SearchBar,
+  Button,
+  Avatar
+} from "react-native-elements";
+import Swipeable from "react-native-swipeable";
+const defaultColors = [
+  "#2ecc71", // emerald
+  "#3498db", // peter river
+  "#8e44ad", // wisteria
+  "#e67e22", // carrot
+  "#e74c3c", // alizarin
+  "#1abc9c", // turquoise
+  "#2c3e50" // midnight blue
+];
+function sumChars(str) {
+  let sum = 0;
+  for (let i = 0; i < str.length; i++) {
+    sum += str.charCodeAt(i);
+  }
+
+  return sum;
+}
 class ContactsComponents extends Component {
   constructor(props) {
     super(props);
@@ -22,7 +47,13 @@ class ContactsComponents extends Component {
     });
     this._fetchData();
   }
-
+  avatarLetter = FullName => {
+    return FullName.match(/\b(\w)/g)
+      .join("")
+      .toUpperCase();
+    //  return   matches.join('');
+    //  return FullName.replace(/\W*(\w)\w*/g,'$1').toUpperCase();
+  };
   uniqueList(list) {
     list = list.filter(
       (elm, index, self) =>
@@ -99,8 +130,8 @@ class ContactsComponents extends Component {
     this.props.navigation.setParams({
       label: `${this.props.countList} Contacts`
     });
-    console.log(this.props.countList);
   };
+
   renderSeparator = () => {
     return (
       <View
@@ -117,6 +148,7 @@ class ContactsComponents extends Component {
   renderHeader = () => {
     return (
       <SearchBar
+        clearIcon
         onChangeText={this.handleSearch}
         placeholder="Type Here..."
         lightTheme
@@ -124,22 +156,43 @@ class ContactsComponents extends Component {
       />
     );
   };
+
   renderContact = ({ item }) => {
     const middleName = item.middleName || "";
     const givenName = item.givenName || "";
     const familyName = item.familyName || "";
     const FullName = givenName + " " + middleName + " " + familyName;
     const phone = item.phoneNumbers[0].number;
-    const avatar = item.thumbnailPath || null;
+    const avatar = item.thumbnailPath || "";
+    let i = sumChars(givenName) % defaultColors.length;
+    let background = defaultColors[i];
+    const leftContent = (
+      <Button buttonStyle={styles.buttons} title="Show Contact" />
+    );
     return (
-      <ListItem
-        onPress={this.onContactSelected.bind(this, item)}
-        roundAvatar
-        title={FullName}
-        subtitle={phone}
-        avatar={{ uri: avatar }}
-        containerStyle={{ borderBottomWidth: 0 }}
-      />
+      <Swipeable
+        leftButtonWidth={100}
+        leftContent={leftContent}
+        onLeftActionRelease={this.onContactSelected.bind(this, item)}
+      >
+        <ListItem
+          onPress={this.onContactSelected.bind(this, item)}
+          roundAvatar
+          title={FullName}
+          subtitle={phone}
+          avatar={
+            <Avatar
+              size="small"
+              rounded
+              overlayContainerStyle={{ backgroundColor: background }}
+              title={this.avatarLetter(givenName)}
+              onPress={() => console.log("Works!")}
+              activeOpacity={0.7}
+            />
+          }
+          containerStyle={{ borderBottomWidth: 0 }}
+        />
+      </Swipeable>
     );
   };
   renderFooter = () => {
@@ -152,7 +205,11 @@ class ContactsComponents extends Component {
           alignItems: "center"
         }}
       >
-        <ActivityIndicator color="#00cec9" size="large" />
+        <ActivityIndicator
+          style={{ flex: 1, alignSelf: "center" }}
+          color="#00cec9"
+          size="large"
+        />
       </View>
     );
   };
@@ -172,7 +229,7 @@ class ContactsComponents extends Component {
             }
             ItemSeparatorComponent={this.renderSeparator}
             ListHeaderComponent={this.renderHeader}
-            ListEmptyComponent={this.renderFooter}
+            ListFooterComponent={this.renderFooter}
           />
         </List>
       </SafeAreaView>
@@ -180,8 +237,14 @@ class ContactsComponents extends Component {
   }
 }
 
+const styles = StyleSheet.create({
+  buttons: {
+    backgroundColor: "#324C66",
+    height: 55,
+    marginTop: 5
+  }
+});
 const mapStateToProps = state => {
-  console.log("state", state);
   return {
     contacts: state.contacts.data,
     fullData: state.contacts.fullData,
