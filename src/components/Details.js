@@ -1,16 +1,17 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, Linking, Alert } from "react-native";
+import { View, StyleSheet, Linking, Alert } from "react-native";
 import { connect } from "react-redux";
-import { Card, CardItem, Button } from "./common";
-let middleName,givenName,familyName,FullName;
+import { CardItem } from "./common";
+import { Card, Button } from "react-native-elements";
+let middleName, givenName, familyName, FullName;
 class Details extends Component {
- constructor(props){
-   super(props);
+  constructor(props) {
+    super(props);
     middleName = this.props.contact.middleName || "";
     givenName = this.props.contact.givenName || "";
     familyName = this.props.contact.familyName || "";
     FullName = givenName + " " + middleName + " " + familyName;
- }
+  }
   componentDidMount() {
     this.props.navigation.setParams({
       user: `${FullName} `
@@ -38,18 +39,35 @@ class Details extends Component {
   }
   render() {
     return (
-      <Card>
-        <CardItem>
-          <View style={styles.container}>
-            <Text style={styles.name}>{FullName}</Text>
-          </View>
-        </CardItem>
+      <Card title={FullName}>
         <CardItem>
           <View style={styles.buttons}>
-            <Button onPress={this.callContact}>Call</Button>
+            <Button
+              onPress={this.callContact}
+              icon={{ name: "phone", type: "font-awesome" }}
+              backgroundColor="#e74c3c"
+              buttonStyle={{
+                borderRadius: 0,
+                marginLeft: 0,
+                marginRight: 0,
+                marginBottom: 0
+              }}
+              title="Call"
+            />
           </View>
           <View style={styles.buttons}>
-            <Button onPress={this.textContact}>Text</Button>
+            <Button
+              onPress={this.textContact}
+              icon={{ name: "textsms" }}
+              backgroundColor="#3498db"
+              buttonStyle={{
+                borderRadius: 0,
+                marginLeft: 0,
+                marginRight: 0,
+                marginBottom: 0
+              }}
+              title="Text"
+            />
           </View>
         </CardItem>
       </Card>
