@@ -10,24 +10,36 @@ const Routes = createStackNavigator({
     navigationOptions: ({ navigation }) => ({
       header: (
         <Header
-        statusBarProps={{ barStyle: 'light-content' }}
-        outerContainerStyles={{ backgroundColor: '#324C66' }}
-          centerComponent={{ text: navigation.getParam('label'), style: { color: "#fff" } }}
-          rightComponent={{ icon: "home", color: "#fff",onPress:()=>{navigation.navigate('contacts') } }}
+          statusBarProps={{ barStyle: "light-content" }}
+          outerContainerStyles={{ backgroundColor: "#324C66" }}
+          centerComponent={{
+            text: navigation.getParam("label"),
+            style: { color: "#fff" }
+          }}
         />
       )
     })
   },
   details: {
     screen: Details,
-    navigationOptions: ({navigation}) =>({
+    navigationOptions: ({ navigation }) => ({
       title: "Details",
       header: (
         <Header
-        statusBarProps={{ barStyle: 'light-content' }}
-        outerContainerStyles={{ backgroundColor: '#324C66' }}
-          centerComponent={{ text: navigation.getParam('user'), style: { color: "#fff" } }}
-          rightComponent={{ icon: "home", color: "#fff",onPress:()=>{navigation.navigate('contacts') }}}
+          statusBarProps={{ barStyle: "light-content" }}
+          outerContainerStyles={{ backgroundColor: "#324C66" }}
+          centerComponent={{
+            text: navigation.getParam("user"),
+            style: { color: "#fff" }
+          }}
+          rightComponent={{
+            icon: "home",
+            color: "#fff",
+            underlayColor: "rgba(255,255,255,0)",
+            onPress: () => {
+              navigation.navigate("contacts");
+            }
+          }}
         />
       )
     })
