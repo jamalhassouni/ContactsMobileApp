@@ -13,6 +13,13 @@ import { connect } from "react-redux";
 import _ from "lodash";
 import * as action from "../actions";
 import {
+  defaultColors,
+  sumChars,
+  uniqueList,
+  avatarLetter,
+  _contains
+} from "./common/Helper";
+import {
   List,
   ListItem,
   SearchBar,
@@ -20,23 +27,7 @@ import {
   Avatar
 } from "react-native-elements";
 import Swipeable from "react-native-swipeable";
-const defaultColors = [
-  "#2ecc71", // emerald
-  "#3498db", // peter river
-  "#8e44ad", // wisteria
-  "#e67e22", // carrot
-  "#e74c3c", // alizarin
-  "#1abc9c", // turquoise
-  "#2c3e50" // midnight blue
-];
-function sumChars(str) {
-  let sum = 0;
-  for (let i = 0; i < str.length; i++) {
-    sum += str.charCodeAt(i);
-  }
 
-  return sum;
-}
 class ContactsComponents extends Component {
   constructor(props) {
     super(props);
@@ -48,29 +39,6 @@ class ContactsComponents extends Component {
     this._fetchData();
   }
 
-  avatarLetter = FullName => {
-    FullName = FullName.match(/\b(\w)/g);
-    if (FullName != null) {
-      return FullName.join("").toUpperCase();
-    }
-  };
-
-  uniqueList(list) {
-    list = list.filter(
-      (elm, index, self) =>
-        index ===
-        self.findIndex(t => {
-          if (elm.phoneNumbers[0] != null && t.phoneNumbers[0] != null) {
-            return t.phoneNumbers[0].number === elm.phoneNumbers[0].number;
-          }
-          return false;
-        })
-    );
-    return list.sort((a, b) =>
-      a.givenName.toUpperCase().localeCompare(b.givenName.toUpperCase())
-    );
-  }
-
   _fetchData = () => {
     if (Platform.OS == "android") {
       PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
@@ -80,7 +48,7 @@ class ContactsComponents extends Component {
         .then(granted => {
           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
             Contacts.getAll((err, contacts) => {
-              this.props.fetchContact(this.uniqueList(contacts));
+              this.props.fetchContact(uniqueList(contacts));
               this.props.navigation.setParams({
                 label: `${this.props.countList} Contacts`
               });
@@ -105,33 +73,11 @@ class ContactsComponents extends Component {
     this.props.selectContact(contact);
     this.props.navigation.navigate("details");
   };
-  _contains = (user, query) => {
-    if (
-      user.givenName !== null &&
-      user.givenName !== undefined &&
-      user.givenName.toLowerCase().includes(query)
-    ) {
-      return true;
-    } else if (
-      user.familyName !== null &&
-      user.familyName !== undefined &&
-      user.familyName.toLowerCase().includes(query)
-    ) {
-      return true;
-    } else if (
-      user.middleName !== null &&
-      user.middleName !== undefined &&
-      user.middleName.toLowerCase().includes(query)
-    ) {
-      return true;
-    }
 
-    return false;
-  };
   handleSearch = text => {
     const formattedQuery = text.trim().toLowerCase();
     const data = _.filter(this.props.fullData, user => {
-      return this._contains(user, formattedQuery);
+      return _contains(user, formattedQuery);
     });
     this.props.SearchContacts(data, text);
     this.props.navigation.setParams({
@@ -192,7 +138,7 @@ class ContactsComponents extends Component {
               size="small"
               rounded
               overlayContainerStyle={{ backgroundColor: background }}
-              title={this.avatarLetter(givenName)}
+              title={avatarLetter(givenName)}
               activeOpacity={0.7}
             />
           }
