@@ -49,18 +49,22 @@ class ContactsComponents extends Component {
   }
 
   avatarLetter = FullName => {
-    return FullName.match(/\b(\w)/g)
-      .join("")
-      .toUpperCase();
+    FullName = FullName.match(/\b(\w)/g);
+    if (FullName != null) {
+      return FullName.join("").toUpperCase();
+    }
   };
 
   uniqueList(list) {
     list = list.filter(
       (elm, index, self) =>
         index ===
-        self.findIndex(
-          t => t.phoneNumbers[0].number === elm.phoneNumbers[0].number
-        )
+        self.findIndex(t => {
+          if (elm.phoneNumbers[0] != null && t.phoneNumbers[0] != null) {
+            return t.phoneNumbers[0].number === elm.phoneNumbers[0].number;
+          }
+          return false;
+        })
     );
     return list.sort((a, b) =>
       a.givenName.toUpperCase().localeCompare(b.givenName.toUpperCase())
@@ -165,8 +169,8 @@ class ContactsComponents extends Component {
     const givenName = item.givenName || "";
     const familyName = item.familyName || "";
     const FullName = givenName + " " + middleName + " " + familyName;
+    //const avatar = item.thumbnailPath || "";
     const phone = item.phoneNumbers[0].number;
-    const avatar = item.thumbnailPath || "";
     let i = sumChars(givenName) % defaultColors.length;
     let background = defaultColors[i];
     const leftContent = (
@@ -189,7 +193,6 @@ class ContactsComponents extends Component {
               rounded
               overlayContainerStyle={{ backgroundColor: background }}
               title={this.avatarLetter(givenName)}
-              onPress={() => console.log("Works!")}
               activeOpacity={0.7}
             />
           }
@@ -248,6 +251,7 @@ const styles = StyleSheet.create({
   }
 });
 const mapStateToProps = state => {
+  console.log("state ", state);
   return {
     contacts: state.contacts.data,
     fullData: state.contacts.fullData,

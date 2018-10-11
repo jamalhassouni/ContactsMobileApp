@@ -3,7 +3,7 @@ import { View, StyleSheet, Linking, Alert } from "react-native";
 import { connect } from "react-redux";
 import { CardItem } from "./common";
 import { Card, Button } from "react-native-elements";
-let middleName, givenName, familyName, FullName;
+let middleName, givenName, familyName, FullName, phone;
 class Details extends Component {
   constructor(props) {
     super(props);
@@ -11,6 +11,7 @@ class Details extends Component {
     givenName = this.props.contact.givenName || "";
     familyName = this.props.contact.familyName || "";
     FullName = givenName + " " + middleName + " " + familyName;
+    phone = this.props.contact.phoneNumbers[0].number;
   }
   componentDidMount() {
     this.props.navigation.setParams({
@@ -18,12 +19,10 @@ class Details extends Component {
     });
   }
   callContact = () => {
-    const phone = this.props.contact.phoneNumbers[0].number;
     const url = `tel:${phone}`;
     this.lanuchUrl(url);
   };
   textContact = () => {
-    const phone = this.props.contact.phoneNumbers[0].number;
     const url = `sms:${phone}`;
     this.lanuchUrl(url);
   };
