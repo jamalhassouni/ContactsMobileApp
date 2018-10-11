@@ -47,13 +47,13 @@ class ContactsComponents extends Component {
     });
     this._fetchData();
   }
+
   avatarLetter = FullName => {
     return FullName.match(/\b(\w)/g)
       .join("")
       .toUpperCase();
-    //  return   matches.join('');
-    //  return FullName.replace(/\W*(\w)\w*/g,'$1').toUpperCase();
   };
+
   uniqueList(list) {
     list = list.filter(
       (elm, index, self) =>
@@ -62,8 +62,11 @@ class ContactsComponents extends Component {
           t => t.phoneNumbers[0].number === elm.phoneNumbers[0].number
         )
     );
-    return list.sort((a, b) => a.givenName.localeCompare(b.givenName));
+    return list.sort((a, b) =>
+      a.givenName.toUpperCase().localeCompare(b.givenName.toUpperCase())
+    );
   }
+
   _fetchData = () => {
     if (Platform.OS == "android") {
       PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
