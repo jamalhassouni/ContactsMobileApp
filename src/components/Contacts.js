@@ -19,6 +19,7 @@ import {
   avatarLetter,
   _contains
 } from "./common/Helper";
+import { FloatingMenu } from "./common";
 import {
   List,
   ListItem,
@@ -74,6 +75,9 @@ class ContactsComponents extends Component {
     this.props.navigation.navigate("details");
   };
 
+  onClickAddContact = () => {
+    this.props.navigation.navigate("AddContact");
+  };
   handleSearch = text => {
     const formattedQuery = text.trim().toLowerCase();
     const data = _.filter(this.props.fullData, user => {
@@ -101,6 +105,8 @@ class ContactsComponents extends Component {
   renderHeader = () => {
     return (
       <SearchBar
+        containerStyle={styles.SearchBar}
+        inputStyle={{ height: 40 }}
         clearIcon
         onChangeText={this.handleSearch}
         placeholder="Type Here..."
@@ -159,7 +165,7 @@ class ContactsComponents extends Component {
       >
         <ActivityIndicator
           style={{ flex: 1, alignSelf: "center" }}
-          color="#00cec9"
+          color="#0984e3"
           size="large"
         />
       </View>
@@ -167,8 +173,9 @@ class ContactsComponents extends Component {
   };
   render() {
     return (
-      <SafeAreaView>
-        <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+      <SafeAreaView style={styles.MainContainer}>
+        {this.renderHeader()}
+        <List containerStyle={styles.list}>
           <FlatList
             data={this.props.contacts}
             renderItem={this.renderContact}
@@ -180,20 +187,33 @@ class ContactsComponents extends Component {
               />
             }
             ItemSeparatorComponent={this.renderSeparator}
-            ListHeaderComponent={this.renderHeader}
-            ListFooterComponent={this.renderFooter}
           />
         </List>
+        {this.renderFooter()}
+        <FloatingMenu size={18} onPress={this.onClickAddContact} />
       </SafeAreaView>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  MainContainer: {
+    flex: 1
+  },
+  list: {
+    borderTopWidth: 0,
+    borderBottomWidth: 0,
+    marginTop: 0
+  },
   buttons: {
     backgroundColor: "#324C66",
     height: 55,
     marginTop: 5
+  },
+  SearchBar: {
+    borderTopWidth: 0,
+    borderBottomWidth: 0,
+    backgroundColor: "transparent"
   }
 });
 const mapStateToProps = state => {
