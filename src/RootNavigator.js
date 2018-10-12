@@ -4,6 +4,7 @@ import { createStackNavigator } from "react-navigation";
 import ContactsComponents from "./components/Contacts";
 import Details from "./components/Details";
 import Options from "./components/Options";
+import AddContact from "./components/AddContact";
 import { Header } from "react-native-elements";
 //navigation.getParam('label')
 
@@ -58,7 +59,7 @@ const Routes = createStackNavigator(
         header: (
           <Header
             statusBarProps={{ barStyle: "light-content" }}
-            outerContainerStyles={{ backgroundColor: "#324C66" }}
+            outerContainerStyles={{ backgroundColor: "#0984e3" }}
             centerComponent={{
               text: navigation.getParam("label"),
               style: { color: "#fff" }
@@ -82,7 +83,7 @@ const Routes = createStackNavigator(
         header: (
           <Header
             statusBarProps={{ barStyle: "light-content" }}
-            outerContainerStyles={{ backgroundColor: "#324C66" }}
+            outerContainerStyles={{ backgroundColor: "#0984e3" }}
             centerComponent={{
               text: navigation.getParam("user"),
               style: { color: "#fff" }
@@ -106,9 +107,33 @@ const Routes = createStackNavigator(
         header: (
           <Header
             statusBarProps={{ barStyle: "light-content" }}
-            outerContainerStyles={{ backgroundColor: "#324C66" }}
+            outerContainerStyles={{ backgroundColor: "#0984e3" }}
             centerComponent={{
               text: navigation.getParam("user"),
+              style: { color: "#fff" }
+            }}
+            rightComponent={{
+              icon: "home",
+              color: "#fff",
+              underlayColor: "rgba(255,255,255,0)",
+              onPress: () => {
+                navigation.navigate("contacts");
+              }
+            }}
+          />
+        )
+      })
+    },
+    AddContact: {
+      screen: AddContact,
+      navigationOptions: ({ navigation }) => ({
+        title: "AddContact",
+        header: (
+          <Header
+            statusBarProps={{ barStyle: "light-content" }}
+            outerContainerStyles={{ backgroundColor: "#0984e3" }}
+            centerComponent={{
+              text: navigation.getParam("title"),
               style: { color: "#fff" }
             }}
             rightComponent={{
