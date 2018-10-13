@@ -107,13 +107,19 @@ const Routes = createStackNavigator(
         header: (
           <Header
             statusBarProps={{ barStyle: "light-content" }}
-            outerContainerStyles={{ backgroundColor: "#0984e3" }}
+            placement="left"
             centerComponent={{
-              text: navigation.getParam("user"),
-              style: { color: "#fff" }
+              text: "Contacts",
+              style: { color: "#fff", fontSize: 18 }
             }}
-            rightComponent={{
-              icon: "home",
+            outerContainerStyles={{
+              backgroundColor: "#0984e3",
+              alignItems: "flex-start"
+            }}
+            centerContainerStyle={{ marginLeft: 10 }}
+            leftComponent={{
+              icon: "arrow-back",
+              iconStyle: { marginRight: 20 },
               color: "#fff",
               underlayColor: "rgba(255,255,255,0)",
               onPress: () => {
