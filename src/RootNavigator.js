@@ -1,5 +1,5 @@
 import React from "react";
-import { Platform, View } from "react-native";
+import { Platform, View, StyleSheet } from "react-native";
 import { createStackNavigator } from "react-navigation";
 import ContactsComponents from "./components/Contacts";
 import Details from "./components/Details";
@@ -59,7 +59,7 @@ const Routes = createStackNavigator(
         header: (
           <Header
             statusBarProps={{ barStyle: "light-content" }}
-            outerContainerStyles={{ backgroundColor: "#0984e3" }}
+            outerContainerStyles={styles.outerContainerStyles}
             centerComponent={{
               text: navigation.getParam("label"),
               style: { color: "#fff" }
@@ -83,7 +83,7 @@ const Routes = createStackNavigator(
         header: (
           <Header
             statusBarProps={{ barStyle: "light-content" }}
-            outerContainerStyles={{ backgroundColor: "#0984e3" }}
+            outerContainerStyles={styles.outerContainerStyles}
             centerComponent={{
               text: navigation.getParam("user"),
               style: { color: "#fff" }
@@ -110,16 +110,17 @@ const Routes = createStackNavigator(
             placement="left"
             centerComponent={{
               text: "Contacts",
-              style: { color: "#fff", fontSize: 18 }
+              style: { color: "#fff", fontSize: 16, paddingRight: 10 }
             }}
             outerContainerStyles={{
               backgroundColor: "#0984e3",
+              height: 60,
               alignItems: "flex-start"
             }}
-            centerContainerStyle={{ marginLeft: 10 }}
             leftComponent={{
               icon: "arrow-back",
-              iconStyle: { marginRight: 20 },
+              size: 18,
+              iconStyle: { marginRight: 20, paddingRight: 10 },
               color: "#fff",
               underlayColor: "rgba(255,255,255,0)",
               onPress: () => {
@@ -137,7 +138,7 @@ const Routes = createStackNavigator(
         header: (
           <Header
             statusBarProps={{ barStyle: "light-content" }}
-            outerContainerStyles={{ backgroundColor: "#0984e3" }}
+            outerContainerStyles={styles.outerContainerStyles}
             centerComponent={{
               text: navigation.getParam("title"),
               style: { color: "#fff" }
@@ -160,5 +161,10 @@ const Routes = createStackNavigator(
     transitionConfig: transitionConfig
   }
 );
-
+const styles = StyleSheet.create({
+  outerContainerStyles: {
+    backgroundColor: "#0984e3",
+    height: 60
+  }
+});
 export default Routes;
