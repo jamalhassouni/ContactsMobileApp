@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import { View, StyleSheet, FlatList } from "react-native";
+import { View, StyleSheet, FlatList, Switch } from "react-native";
 import { connect } from "react-redux";
 import { Button, List, ListItem } from "react-native-elements";
-import Icon from "react-native-vector-icons/FontAwesome";
 class Options extends Component {
   constructor(props) {
     super(props);
@@ -16,29 +15,24 @@ class Options extends Component {
     return (
       <ListItem
         onPress={() => console.log("cliked")}
-        roundAvatar
+        switchButton
+        hideChevron
+        trackColor={"#00BCD4"}
         title={"jamal"}
         subtitle={"hassouni"}
+        switched={false}
+        onSwitch={value => {
+          console.log("switched", value);
+        }}
         containerStyle={{ borderBottomWidth: 0 }}
       />
     );
   };
 
-  renderFloatingMenu = () => {
-    return (
-      <View style={mainConatinerStyle}>
-        <Button
-          onPress={() => console.log("cliked button")}
-          icon={<Icon name="rocket" size={30} color="#900" />}
-          title="BUTTON WITH RIGHT ICON"
-        />
-      </View>
-    );
-  };
   render() {
     return (
       <View style={styles.mainConatinerStyle}>
-        <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+        <List containerStyle={styles.list}>
           <FlatList
             data={this.props.contacts}
             renderItem={this.renderOption}
@@ -52,17 +46,12 @@ class Options extends Component {
 
 const styles = StyleSheet.create({
   mainConatinerStyle: {
-    //flexDirection: "column",
-    //flex: 1
+    flex: 1
   },
-  floatingMenuButtonStyle: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: "#ee6e73",
-    position: "absolute",
-    bottom: 10,
-    right: 10
+  list: {
+    borderTopWidth: 0,
+    borderBottomWidth: 0,
+    marginTop: 0
   }
 });
 
