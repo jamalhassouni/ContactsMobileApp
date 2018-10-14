@@ -80,24 +80,7 @@ const Routes = createStackNavigator(
       screen: Details,
       navigationOptions: ({ navigation }) => ({
         title: "Details",
-        header: (
-          <Header
-            statusBarProps={{ barStyle: "light-content" }}
-            outerContainerStyles={styles.outerContainerStyles}
-            centerComponent={{
-              text: navigation.getParam("user"),
-              style: { color: "#fff" }
-            }}
-            rightComponent={{
-              icon: "home",
-              color: "#fff",
-              underlayColor: "rgba(255,255,255,0)",
-              onPress: () => {
-                navigation.navigate("contacts");
-              }
-            }}
-          />
-        )
+        header: null
       })
     },
     options: {
