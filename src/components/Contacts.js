@@ -178,6 +178,8 @@ class ContactsComponents extends PureComponent {
         <List containerStyle={styles.list}>
           <FlatList
             data={this.props.contacts}
+            ref={(ref) => { this.flatListRef = ref; }}
+            initialNumToRender={10}
             renderItem={this.renderContact}
             keyExtractor={(item, index) => index.toString()}
             refreshControl={
