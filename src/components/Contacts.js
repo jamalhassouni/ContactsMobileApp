@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { PermissionsAndroid, Platform } from "react-native";
 import Contacts from "react-native-contacts";
 import {
@@ -10,7 +10,7 @@ import {
   RefreshControl
 } from "react-native";
 import { connect } from "react-redux";
-import _ from "lodash";
+import filter from "lodash/filter";
 import * as action from "../actions";
 import {
   defaultColors,
@@ -29,7 +29,7 @@ import {
 } from "react-native-elements";
 import Swipeable from "react-native-swipeable";
 
-class ContactsComponents extends Component {
+class ContactsComponents extends PureComponent {
   constructor(props) {
     super(props);
   }
@@ -80,7 +80,7 @@ class ContactsComponents extends Component {
   };
   handleSearch = text => {
     const formattedQuery = text.trim().toLowerCase();
-    const data = _.filter(this.props.fullData, user => {
+    const data = filter(this.props.fullData, user => {
       return _contains(user, formattedQuery);
     });
     this.props.SearchContacts(data, text);
