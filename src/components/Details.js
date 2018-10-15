@@ -97,7 +97,7 @@ class Details extends Component {
                 style={styles.iconBack}
                 onPress={this.onBack}
                 name={"arrow-back"}
-                size={18}
+                size={20}
                 underlayColor={"rgba(255,255,255,0)"}
                 color={"#fff"}
               />
@@ -107,7 +107,7 @@ class Details extends Component {
                 style={styles.iconOptions}
                 onPress={this.onBack}
                 name={"more-vert"}
-                size={18}
+                size={20}
                 underlayColor={"rgba(255,255,255,0)"}
                 color={"#fff"}
               />
