@@ -50,6 +50,22 @@ export const uniqueList = list => {
   );
 };
 
+export const uniqueNumber  = numbers =>{
+   numbers = numbers.filter(
+    (elm, index, self) =>
+      index ===
+      self.findIndex(t => {
+        if (elm.number != null && t.number != null) {
+          return (
+            phoneNumberRegex(t.number) ===
+            phoneNumberRegex(elm.number)
+          );
+        }
+        return false;
+      })
+  );
+  return numbers;
+};
 export const avatarLetter = FullName => {
   var arregex = /[\u0600-\u06FF]/;
   if (arregex.test(FullName)) {
