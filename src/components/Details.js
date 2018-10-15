@@ -30,7 +30,7 @@ class Details extends Component {
     this.props.navigation.setParams({
       user: `${FullName} `
     });
-    console.log("gradient", gradient[0].name);
+    console.log("gradient", gradient[0].name,allGradients.length);
     console.log(
       "numbers ",
       FullName,
@@ -146,7 +146,7 @@ class Details extends Component {
           </List>
         </ScrollView>
         <FloatingMenu
-          name="edit"
+          icon="edit"
           size={18}
           backgroundColor={colors[0]}
           onPress={() => console.log("yes!")}
