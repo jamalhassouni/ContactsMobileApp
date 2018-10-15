@@ -219,7 +219,6 @@ const styles = StyleSheet.create({
   }
 });
 const mapStateToProps = state => {
-  console.log("state ", state);
   return {
     contacts: state.contacts.data,
     fullData: state.contacts.fullData,
