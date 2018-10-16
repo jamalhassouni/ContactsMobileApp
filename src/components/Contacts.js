@@ -46,22 +46,26 @@ class ContactsComponents extends PureComponent {
       PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
         title: "Contacts",
         message: "This app would like to view your contacts."
-      })
-        .then(granted => {
-          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            Contacts.getAll((err, contacts) => {
-              this.props.fetchContact(uniqueList(contacts));
-              this.props.navigation.setParams({
-                label: `${this.props.countList} Contacts`
-              });
-            });
-          } else {
-            // Handle
-          }
+      }),
+        PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CALL_PHONE, {
+          title: "Contacts",
+          message: "This app wants to be able to make calls"
         })
-        .catch(err => {
-          console.log("PermissionsAndroid", err);
-        });
+          .then(granted => {
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+              Contacts.getAll((err, contacts) => {
+                this.props.fetchContact(uniqueList(contacts));
+                this.props.navigation.setParams({
+                  label: `${this.props.countList} Contacts`
+                });
+              });
+            } else {
+              // Handle
+            }
+          })
+          .catch(err => {
+            console.log("PermissionsAndroid", err);
+          });
     }
   };
   _onRefresh = () => {
