@@ -6,7 +6,10 @@ import {
   Alert,
   Dimensions,
   Text,
-  ScrollView
+  ScrollView,
+  alert,
+  PermissionsAndroid,
+  Platform
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { connect } from "react-redux";
@@ -15,7 +18,7 @@ import { avatarLetter, uniqueNumber } from "./common/Helper";
 import { Button, Avatar, List, ListItem, Icon } from "react-native-elements";
 import allGradients from "../gradients.json";
 import sampleSize from "lodash/sampleSize";
-import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
+import RNImmediatePhoneCall from "react-native-immediate-phone-call";
 let middleName, givenName, familyName, FullName, gradient, colors;
 class Details extends Component {
   constructor(props) {
@@ -31,15 +34,30 @@ class Details extends Component {
     this.props.navigation.setParams({
       user: `${FullName} `
     });
-    console.log("gradient", gradient[0].name,allGradients.length);
-    console.log(
-      "numbers ",
-      FullName,
-      uniqueNumber(this.props.contact.phoneNumbers)
-    );
   }
   callContact(phone) {
-    RNImmediatePhoneCall.immediatePhoneCall(phone);
+    // for android only  Ask the user for permission to make calls
+    if (Platform.OS == "android") {
+      PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CALL_PHONE, {
+        title: "Contacts",
+        message: "This app would like to view your contacts."
+      })
+        .then(granted => {
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            //  Initiate immediate phone call
+            RNImmediatePhoneCall.immediatePhoneCall(phone);
+          } else {
+            // Handle
+            alert(
+              "Contacts",
+              "You will not be able to use the call feature if we do not have permission to do so"
+            );
+          }
+        })
+        .catch(err => {
+          console.log("PermissionsAndroid", err);
+        });
+    }
   }
   textContact(phone) {
     const url = `sms:${phone}`;
