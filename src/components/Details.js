@@ -15,6 +15,7 @@ import { avatarLetter, uniqueNumber } from "./common/Helper";
 import { Button, Avatar, List, ListItem, Icon } from "react-native-elements";
 import allGradients from "../gradients.json";
 import sampleSize from "lodash/sampleSize";
+import RNImmediatePhoneCall from 'react-native-immediate-phone-call';
 let middleName, givenName, familyName, FullName, gradient, colors;
 class Details extends Component {
   constructor(props) {
@@ -38,8 +39,7 @@ class Details extends Component {
     );
   }
   callContact(phone) {
-    const url = `tel:${phone}`;
-    this.lanuchUrl(url);
+    RNImmediatePhoneCall.immediatePhoneCall(phone);
   }
   textContact(phone) {
     const url = `sms:${phone}`;
