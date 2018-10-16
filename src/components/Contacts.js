@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
-import { PermissionsAndroid, Platform } from "react-native";
-import Contacts from "react-native-contacts";
 import {
+  PermissionsAndroid,
+  Platform,
   View,
   FlatList,
   StyleSheet,
@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   RefreshControl
 } from "react-native";
+import Contacts from "react-native-contacts";
 import { connect } from "react-redux";
 import filter from "lodash/filter";
 import * as action from "../actions";
@@ -178,7 +179,9 @@ class ContactsComponents extends PureComponent {
         <List containerStyle={styles.list}>
           <FlatList
             data={this.props.contacts}
-            ref={(ref) => { this.flatListRef = ref; }}
+            ref={ref => {
+              this.flatListRef = ref;
+            }}
             initialNumToRender={10}
             renderItem={this.renderContact}
             keyExtractor={(item, index) => index.toString()}
