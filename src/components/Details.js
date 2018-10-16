@@ -7,9 +7,9 @@ import {
   Dimensions,
   Text,
   ScrollView,
-  alert,
   PermissionsAndroid,
-  Platform
+  Platform,
+  Animated,
 } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 import { connect } from "react-redux";
@@ -20,6 +20,7 @@ import allGradients from "../gradients.json";
 import sampleSize from "lodash/sampleSize";
 import RNImmediatePhoneCall from "react-native-immediate-phone-call";
 let middleName, givenName, familyName, FullName, gradient, colors;
+const { width, height } = Dimensions.get("window");
 class Details extends Component {
   constructor(props) {
     super(props);
@@ -29,6 +30,9 @@ class Details extends Component {
     FullName = givenName + " " + middleName + " " + familyName;
     gradient = sampleSize(allGradients, 1);
     colors = gradient[0].colors;
+    this.state = {
+      modalY: new Animated.Value(-height)
+    };
   }
   componentDidMount() {
     this.props.navigation.setParams({
@@ -48,7 +52,7 @@ class Details extends Component {
             RNImmediatePhoneCall.immediatePhoneCall(phone);
           } else {
             // Handle
-            alert(
+            Alert.alert(
               "Contacts",
               "You will not be able to use the call feature if we do not have permission to do so"
             );
@@ -99,8 +103,66 @@ class Details extends Component {
       </View>
     );
   };
+  openModal() {
+    Animated.timing(this.state.modalY, {
+      duration: 300,
+      toValue: 0
+    }).start();
+  }
+
+  closeModal() {
+    Animated.timing(this.state.modalY, {
+      duration: 300,
+      toValue: -height
+    }).start();
+  }
+  renderDivider =  () =>{
+    return ( <View
+      style={{
+        height: 0.5,
+        width: "80%",
+        backgroundColor: "#CED0CE",
+        marginLeft: "5%"
+      }}
+    />);
+  };
+  userConfirm = () =>{
+    Alert.alert(
+      'confirmation',
+      'Are you sure you want to delete '+FullName,
+      [
+        {text: 'Yes', onPress: () => console.log('Yes pressed')},
+        {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+      ],
+      //Add cancelable: false property if we don’t want Alert closed when click on black drop background
+     // { cancelable: false }
+    )
+  };
   render() {
-    const { width, height } = Dimensions.get("window");
+    var ModalTop = (
+      <Animated.View
+        style={[
+          styles.modal,
+          { transform: [{ translateY: this.state.modalY }] }
+        ]}
+      >
+        <List containerStyle={[styles.list,{backgroundColor:"transparent"}]}>
+          <ListItem
+           onPress={this.closeModal.bind(this)}
+            rightIcon={<Icon onPress={this.closeModal.bind(this)} name="close" color="#ff7979" />}
+            containerStyle={{ borderBottomWidth: 0 }}
+          />
+          {this.renderDivider()}
+          <ListItem
+          hideChevron
+          onPress={this.userConfirm}
+            title='Delete Contact'
+            containerStyle={{ borderBottomWidth: 0 }}
+          />
+          {this.renderDivider()}
+        </List>
+      </Animated.View>
+    );
     return (
       <View style={styles.container}>
         <ScrollView>
@@ -123,7 +185,7 @@ class Details extends Component {
             <View style={styles.headerRight}>
               <Icon
                 style={styles.iconOptions}
-                onPress={this.onBack}
+                onPress={this.openModal.bind(this)}
                 name={"more-vert"}
                 size={20}
                 underlayColor={"rgba(255,255,255,0)"}
@@ -169,6 +231,7 @@ class Details extends Component {
           backgroundColor={colors[0]}
           onPress={() => console.log("yes!")}
         />
+        {ModalTop}
       </View>
     );
   }
@@ -252,6 +315,15 @@ const styles = StyleSheet.create({
     position: "relative",
     top: 0,
     right: 50
+  },
+  modal: {
+    height: 120,
+    width: width,
+    position: "absolute",
+    top: 0,
+    left: 0,
+    backgroundColor: "#dff9fb",
+    justifyContent: "center"
   }
 });
 
