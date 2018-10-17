@@ -35,6 +35,18 @@ class ContactsComponents extends PureComponent {
     super(props);
   }
   componentDidMount() {
+    if (Platform.OS == "android") {
+      PermissionsAndroid.requestMultiple(
+        [
+          PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
+          PermissionsAndroid.PERMISSIONS.WRITE_CONTACTS,
+          PermissionsAndroid.PERMISSIONS.CALL_PHONE
+        ]
+      )
+      .catch(err => {
+        console.log("PermissionsAndroid", err);
+      });
+    }
     this.props.navigation.setParams({
       label: `${this.props.countList} Contacts`
     });
@@ -42,31 +54,18 @@ class ContactsComponents extends PureComponent {
   }
 
   _fetchData = () => {
-    if (Platform.OS == "android") {
-      PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_CONTACTS, {
-        title: "Contacts",
-        message: "This app would like to view your contacts."
-      }),
-        PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.CALL_PHONE, {
-          title: "Contacts",
-          message: "This app wants to be able to make calls"
-        })
-          .then(granted => {
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-              Contacts.getAll((err, contacts) => {
-                this.props.fetchContact(uniqueList(contacts));
-                this.props.navigation.setParams({
-                  label: `${this.props.countList} Contacts`
-                });
-              });
-            } else {
-              // Handle
-            }
-          })
-          .catch(err => {
-            console.log("PermissionsAndroid", err);
+    PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_CONTACTS).then((granted) =>{
+      if(granted){
+        Contacts.getAll((err, contacts) => {
+          this.props.fetchContact(uniqueList(contacts));
+          this.props.navigation.setParams({
+            label: `${this.props.countList} Contacts`
           });
-    }
+        });
+
+      }
+     });
+
   };
   _onRefresh = () => {
     this._fetchData();
@@ -226,6 +225,7 @@ const styles = StyleSheet.create({
   }
 });
 const mapStateToProps = state => {
+  console.log("state",state);
   return {
     contacts: state.contacts.data,
     fullData: state.contacts.fullData,
