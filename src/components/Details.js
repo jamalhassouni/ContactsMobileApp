@@ -67,7 +67,8 @@ class Details extends Component {
             if (err) throw err;
             // contact deleted
             console.log("deleted ", recordId);
-            this.props.navigation.navigate("contacts");
+            // TODO :  update  contcts state in  Contacts components
+            this.props.navigation.navigate("contacts",{refresh:true});
           }
         );
       }
@@ -421,10 +422,11 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProp = state => {
-  console.log("contact", state);
+const mapStateToProp = (state,ownProps) => {
   return {
-    contact: state.selection.contact
+    contact: state.selection.contact,
+    refresh:ownProps,
+    contacts:state.contacts.data
   };
 };
 export default connect(mapStateToProp)(Details);
