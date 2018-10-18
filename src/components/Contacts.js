@@ -52,7 +52,16 @@ class ContactsComponents extends PureComponent {
     });
     this._fetchData();
   }
+   componentWillReceiveProps(nextProps){
+     if(nextProps.navigation.state.params.refresh){
+      this._fetchData();
+      console.log("refresh ",nextProps.navigation.state.params.refresh);
+        this.props.navigation.setParams({
+          refresh: false,
+        });
 
+     }
+   }
   _fetchData = () => {
     PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_CONTACTS).then((granted) =>{
       if(granted){
@@ -225,7 +234,7 @@ const styles = StyleSheet.create({
   }
 });
 const mapStateToProps = state => {
-  console.log("state",state);
+
   return {
     contacts: state.contacts.data,
     fullData: state.contacts.fullData,
