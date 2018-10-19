@@ -1,6 +1,6 @@
 //import liraries
-import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
 
 // create a component
 const CardItem = props => {
@@ -16,10 +16,8 @@ const styles = StyleSheet.create({
     container: {
         justifyContent: 'flex-start',
         flexDirection: 'row',
-        borderBottomWidth: 1,
         padding: 5,
         backgroundColor: '#fff',
-        borderColor: '#ddd',
     },
 });
 
