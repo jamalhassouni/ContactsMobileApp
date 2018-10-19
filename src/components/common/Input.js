@@ -2,16 +2,18 @@ import React from "react";
 import { Text, TextInput, View, StyleSheet } from "react-native";
 
 const Input = ( props ) => (
-  <View style={styles.container}>
-    <Text style={styles.label}>{props.label}</Text>
+  <View style={styles.container} >
+     {props.label && ( <Text style={styles.label}>{props.label}</Text>)}
+
     <TextInput
+      keyboardType={props.keyboardType}
       value={props.value}
       placeholder={props.placeholder}
       secureTextEntry={props.secureTextEntry || false}
       autoCorrect={false}
       autoCapitalize='none'
       onChangeText={props.onChangeText}
-      style={styles.input}
+      style={props.inputStyle || styles.input}
     />
   </View>
 );
@@ -19,7 +21,7 @@ const Input = ( props ) => (
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    height: 60
+    height: 40
   },
   label: {
     flex: 1,
@@ -30,9 +32,9 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     paddingLeft: 10,
-    fontSize: 16,
+    fontSize: 14,
     color: "#000",
-    borderBottomWidth: 0.5,
+    borderBottomWidth: 0.2,
     borderColor: "#95afc0",
   }
 });
