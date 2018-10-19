@@ -18,6 +18,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         padding: 5,
         backgroundColor: '#fff',
+        marginBottom: 10,
     },
 });
 
