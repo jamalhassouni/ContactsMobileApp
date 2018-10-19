@@ -41,6 +41,7 @@ class Details extends Component {
     });
   }
   callContact(phone) {
+    this.closeAllModal();
     PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CALL_PHONE).then(
       granted => {
         if (granted) {
@@ -51,6 +52,7 @@ class Details extends Component {
     );
   }
   textContact(phone) {
+    this.closeAllModal();
     const url = `sms:${phone}`;
     this.lanuchUrl(url);
   }
@@ -110,6 +112,11 @@ class Details extends Component {
       </View>
     );
   };
+  closeAllModal(){
+    this.closeModalTop();
+    this.closeModalBottom();
+
+  }
   openModalTop() {
     this.closeModalBottom();
     Animated.timing(this.state.modalY, {
