@@ -1,6 +1,6 @@
 //import liraries
-import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React  from 'react';
+import { View,StyleSheet } from 'react-native';
 
 // create a component
 const Card = (props) => {
@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
     container: {
         borderWidth: 1,
         borderRadius: 2,
-        borderColor: '#ddd',
+        borderColor: '#dff9fb',
         borderBottomWidth: 0,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
