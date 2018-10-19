@@ -1,12 +1,12 @@
 import React from "react";
-import { Platform, View, StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 import { createStackNavigator } from "react-navigation";
 import ContactsComponents from "./components/Contacts";
 import Details from "./components/Details";
 import Options from "./components/Options";
 import AddContact from "./components/AddContact";
 import { Header } from "react-native-elements";
-//navigation.getParam('label')
+import Colors from  './components/common/Colors';
 
 const transitionConfig = () => {
   return {
@@ -62,11 +62,11 @@ const Routes = createStackNavigator(
             outerContainerStyles={styles.outerContainerStyles}
             centerComponent={{
               text: navigation.getParam("label"),
-              style: { color: "#fff" }
+              style: { color: Colors.white }
             }}
             rightComponent={{
               icon: "more-vert",
-              color: "#fff",
+              color: Colors.white,
               underlayColor: "rgba(255,255,255,0)",
               onPress: () => {
                 navigation.navigate("options");
@@ -78,7 +78,7 @@ const Routes = createStackNavigator(
     },
     details: {
       screen: Details,
-      navigationOptions: ({ navigation }) => ({
+      navigationOptions: () => ({
         title: "Details",
         header: null
       })
@@ -93,10 +93,10 @@ const Routes = createStackNavigator(
             placement="left"
             centerComponent={{
               text: "Contacts",
-              style: { color: "#fff", fontSize: 16, paddingRight: 10 }
+              style: { color: Colors.white, fontSize: 16, paddingRight: 10 }
             }}
             outerContainerStyles={{
-              backgroundColor: "#0984e3",
+              backgroundColor: Colors.header,
               height: 60,
               alignItems: "flex-start"
             }}
@@ -104,7 +104,7 @@ const Routes = createStackNavigator(
               icon: "arrow-back",
               size: 18,
               iconStyle: { marginRight: 20, paddingRight: 10 },
-              color: "#fff",
+              color: Colors.white,
               underlayColor: "rgba(255,255,255,0)",
               onPress: () => {
                 navigation.navigate("contacts");
@@ -116,26 +116,9 @@ const Routes = createStackNavigator(
     },
     AddContact: {
       screen: AddContact,
-      navigationOptions: ({ navigation }) => ({
+      navigationOptions: () => ({
         title: "AddContact",
-        header: (
-          <Header
-            statusBarProps={{ barStyle: "light-content" }}
-            outerContainerStyles={styles.outerContainerStyles}
-            centerComponent={{
-              text: navigation.getParam("title"),
-              style: { color: "#fff" }
-            }}
-            rightComponent={{
-              icon: "home",
-              color: "#fff",
-              underlayColor: "rgba(255,255,255,0)",
-              onPress: () => {
-                navigation.navigate("contacts");
-              }
-            }}
-          />
-        )
+        header: null
       })
     }
   },
@@ -146,7 +129,7 @@ const Routes = createStackNavigator(
 );
 const styles = StyleSheet.create({
   outerContainerStyles: {
-    backgroundColor: "#0984e3",
+    backgroundColor: Colors.header,
     height: 60
   }
 });
