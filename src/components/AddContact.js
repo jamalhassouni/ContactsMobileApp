@@ -9,7 +9,8 @@ import {
   StyleSheet,
   SafeAreaView,
   Dimensions,
-  Picker
+  Picker,
+  Animated
 } from "react-native";
 import Contacts from "react-native-contacts";
 import { connect } from "react-redux";
@@ -22,6 +23,7 @@ class AddContact extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      bounceValue: new Animated.Value(height), //This is the initial position of the subview
       givenName: "",
       familyName: "",
       middleName: "",
@@ -74,6 +76,30 @@ Contacts.addContact(newPerson, (err) => {
     // Todo : Add new contact
     console.log("new contact ", newContact);
   };
+  onAddnewField = () => {
+    console.log("add new field");
+  };
+  openModalButtom() {
+    //This will animate the transalteY of the modal bottom between 0 & 100 depending on its current state
+    //100 comes from the style below, which is the height of the modal bottom.
+    Animated.spring(this.state.bounceValue, {
+      toValue: 0,
+      //velocity: 3,
+      //tension: 2,
+      duration: 300
+      //friction: 8
+    }).start();
+  }
+
+  closeModalBottom() {
+    Animated.spring(this.state.bounceValue, {
+      toValue: height,
+      //velocity: 3,
+      //tension: 2,
+      duration: 300
+      //friction: 8
+    }).start();
+  }
   renderAvatar = () => {
     return (
       <View style={styles.avatar}>
@@ -113,11 +139,68 @@ Contacts.addContact(newPerson, (err) => {
     );
   };
 
+  renderCustomField = () => {
+    return (
+      // render  modal bottom
+      <Animated.View
+        style={[
+          styles.ModalBottom,
+          { transform: [{ translateY: this.state.bounceValue }] }
+        ]}
+      >
+        <ScrollView>
+          <Text
+            style={{
+              textAlign: "center",
+              fontSize: 16,
+              fontWeight: "bold",
+              marginBottom: 5
+            }}
+          >
+            Add another field
+          </Text>
+          <CardItem backgroundColor="transparent">
+            <View style={[styles.groupBorder, { justifyContent: "center" }]}>
+              <Button
+                onPress={this.closeModalBottom.bind(this)}
+                backgroundColor="trasparent"
+                title="Birthday"
+                buttonStyle={styles.buttonStyles}
+                textStyle={styles.textStyle}
+              />
+            </View>
+          </CardItem>
+          <CardItem>
+            <View style={[styles.groupBorder, { justifyContent: "center" }]}>
+              <Button
+                onPress={this.closeModalBottom.bind(this)}
+                backgroundColor="trasparent"
+                title="Website"
+                buttonStyle={styles.buttonStyles}
+                textStyle={styles.textStyle}
+              />
+            </View>
+          </CardItem>
+          <CardItem>
+            <View style={[styles.groupBorder, { justifyContent: "center" }]}>
+              <Button
+                onPress={this.closeModalBottom.bind(this)}
+                backgroundColor="trasparent"
+                title="Add another field"
+                buttonStyle={styles.buttonStyles}
+                textStyle={styles.textStyle}
+              />
+            </View>
+          </CardItem>
+        </ScrollView>
+      </Animated.View>
+    );
+  };
   render() {
     return (
       <SafeAreaView style={styles.container}>
-        <ScrollView >
-          {this.renderHeader()}
+        {this.renderHeader()}
+        <ScrollView>
           {this.renderAvatar()}
           <View style={{ marginTop: 60, padding: 10 }}>
             <CardItem>
@@ -212,8 +295,20 @@ Contacts.addContact(newPerson, (err) => {
                 />
               </View>
             </CardItem>
+            <CardItem>
+              <View style={[styles.groupBorder, { justifyContent: "center" }]}>
+                <Button
+                  onPress={this.openModalButtom.bind(this)}
+                  backgroundColor={Colors.white}
+                  title="Add another field"
+                  buttonStyle={{ width: width }}
+                  textStyle={{ color: Colors.text, fontSize: 12 }}
+                />
+              </View>
+            </CardItem>
           </View>
         </ScrollView>
+        {this.renderCustomField()}
       </SafeAreaView>
     );
   }
@@ -238,13 +333,13 @@ const styles = StyleSheet.create({
   avatar: {
     flex: 1,
     alignItems: "center",
-    height: 55,
+    height: 120,
     marginTop: 10
   },
   image: {
     justifyContent: "center",
-    width: 50,
-    height: 50,
+    width: 90,
+    height: 90,
     borderRadius: 100
   },
   headerLeft: {
@@ -305,7 +400,19 @@ const styles = StyleSheet.create({
   picker: {
     height: 40,
     width: 120
-  }
+  },
+  ModalBottom: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: "#dff9fb",
+    //  height: width,
+    zIndex: 2,
+    padding: 10
+  },
+  buttonStyles: { width: width, justifyContent: "flex-start" },
+  textStyle: { color: Colors.text, fontSize: 16 }
 });
 const mapStateToProps = state => {
   return {
