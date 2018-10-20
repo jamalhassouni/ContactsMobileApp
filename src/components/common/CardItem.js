@@ -5,7 +5,7 @@ import { View, StyleSheet } from 'react-native';
 // create a component
 const CardItem = props => {
     return (
-        <View style={styles.container}>
+        <View style={styles.container} key={props.index}>
             { props.children }
         </View>
     );
