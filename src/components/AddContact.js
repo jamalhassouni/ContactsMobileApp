@@ -10,12 +10,14 @@ import {
   SafeAreaView,
   Dimensions,
   Picker,
-  Animated
+  Animated,
+  DatePickerAndroid
 } from "react-native";
 import Contacts from "react-native-contacts";
 import { connect } from "react-redux";
 import * as action from "../actions";
-import { Icon, Button } from "react-native-elements";
+import { Button } from "react-native-elements";
+import Icon from "react-native-vector-icons/AntDesign";
 import { Input, CardItem } from "./common";
 import Colors from "./common/Colors";
 const { width, height } = Dimensions.get("window");
@@ -31,7 +33,21 @@ class AddContact extends Component {
       label: "mobile",
       number: "",
       labelEmail: "work",
-      email: ""
+      email: "",
+      labelbirthday: "birthday",
+      birthday: "Date",
+      labelWebsite: "website",
+      website: "",
+      showBirthday: false,
+      showNotes: false,
+      showWebsite: false,
+      note: "",
+      company: "",
+      jobTitle: "",
+      month: "",
+      day: "",
+      year: "",
+      error: ""
     };
   }
   componentDidMount() {
@@ -55,6 +71,7 @@ Contacts.addContact(newPerson, (err) => {
   onBack = () => {
     this.props.navigation.navigate("contacts");
   };
+ // this method  save  contact in addressBook
   onSave = () => {
     let newContact = {
       familyName: this.state.familyName,
@@ -66,19 +83,189 @@ Contacts.addContact(newPerson, (err) => {
           email: this.state.email
         }
       ],
+      company: this.state.company,
+      jobTitle: this.state.jobTitle,
       phoneNumbers: [
         {
           label: this.state.label,
           number: this.state.number
         }
-      ]
+      ],
+      urlAddresses: [
+        {
+          label: this.state.labelWebsite,
+          url: this.state.website
+        }
+      ],
+      birthday: {
+        year: this.state.year,
+        month: this.state.month,
+        day: this.state.day
+      },
+      note: this.state.note
     };
     // Todo : Add new contact
     console.log("new contact ", newContact);
   };
-  onAddnewField = () => {
-    console.log("add new field");
+      // this method  clear  input data and reset state for each  input
+  clearInput = type => {
+    switch (type) {
+      case "givenName":
+        return this.setState({ givenName: "" });
+      case "familyName":
+        return this.setState({ familyName: "" });
+      case "middleName":
+        return this.setState({ middleName: "" });
+      case "date":
+        return this.setState({ birthday: "Date", showBirthday: false });
+      case "number":
+        return this.setState({ number: "" });
+      case "email":
+        return this.setState({ email: "" });
+      case "note":
+        return this.setState({ note: "" });
+      case "website":
+        return this.setState({ website: "" });
+      case "company":
+        return this.setState({ company: "", jobTitle: "" });
+    }
   };
+
+  // this method show date Picker
+  async _onMyDatePress() {
+    try {
+      const { action, year, month, day } = await DatePickerAndroid.open({
+        // Use `new Date()` for current date.
+        // May 25 2020. Month 0 is January.
+        date: new Date()
+      });
+      if (action !== DatePickerAndroid.dismissedAction) {
+        // Selected year, month (0-11), day
+        this.changeBirthday(year, month, day);
+      }
+    } catch ({ code, message }) {
+      console.warn("Cannot open date picker", message);
+    }
+  }
+  // this method  update  birthday state
+  changeBirthday = (year, month, day) => {
+    let birh = `${month + 1}/${day}/${year}`;
+    this.setState({
+      birthday: birh,
+      year: year,
+      month: month + 1,
+      day: day
+    });
+  };
+    //  this method render  Birtday input
+
+  renderBirthday = () => {
+    this.closeModalBottom();
+    return (
+      <CardItem>
+        <View style={styles.groupBorder}>
+          <Picker
+            mode="dropdown"
+            selectedValue={this.state.labelbirthday}
+            style={styles.picker}
+            onValueChange={value => this.setState({ labelbirthday: value })}
+          >
+            <Picker.Item label="Birthday" value="birthday" />
+            <Picker.Item label="Anniversary" value="Anniversary" />
+            <Picker.Item label="Other" value="other" />
+          </Picker>
+          <View style={{ height: 40, flex: 1, flexDirection: "row" }}>
+            <Text
+              style={{
+                fontSize: 14,
+                flex: 1,
+                paddingLeft: 10,
+                position: "relative",
+                top: 10
+              }}
+              onPress={this._onMyDatePress.bind(this)}
+            >
+              {this.state.birthday}
+            </Text>
+            {this.state.birthday != "Date" && (
+              <Icon
+                onPress={this.clearInput.bind(this, "date")}
+                name="minuscircleo"
+                style={styles.iconMinus}
+                size={20}
+              />
+            )}
+          </View>
+        </View>
+      </CardItem>
+    );
+  };
+  // this method render website input
+  renderWebsite = () => {
+    this.closeModalBottom();
+    return (
+      <CardItem>
+        <View style={styles.groupBorder}>
+          <Picker
+            mode="dropdown"
+            selectedValue={this.state.labelWebsite}
+            style={styles.picker}
+            onValueChange={value => this.setState({ labelWebsite: value })}
+          >
+            <Picker.Item label="Website" value="website" />
+          </Picker>
+          <View style={{ height: 40, flex: 1, flexDirection: "row" }}>
+            <Input
+              inputStyle={{
+                flex: 1,
+                paddingLeft: 10,
+                fontSize: 14,
+                color: "#000"
+              }}
+              keyboardType="url"
+              value={this.state.website}
+              placeholder="Website"
+              onChangeText={website => {
+                this.setState({ website });
+              }}
+            />
+            {this.state.website != "" && (
+              <Icon
+                onPress={this.clearInput.bind(this, "website")}
+                name="minuscircleo"
+                style={styles.iconMinus}
+                size={20}
+              />
+            )}
+          </View>
+        </View>
+      </CardItem>
+    );
+  };
+  // this method render notes input
+  renderNotes = () => {
+    this.closeModalBottom();
+    return (
+      <CardItem>
+        <Input
+          value={this.state.note}
+          placeholder="Notes"
+          onChangeText={note => {
+            this.setState({ note });
+          }}
+        />
+        {this.state.note != "" && (
+          <Icon
+            onPress={this.clearInput.bind(this, "note")}
+            name="minuscircleo"
+            style={styles.iconMinus}
+            size={20}
+          />
+        )}
+      </CardItem>
+    );
+  };
+  // this method  show modal
   openModalButtom() {
     //This will animate the transalteY of the modal bottom between 0 & 100 depending on its current state
     //100 comes from the style below, which is the height of the modal bottom.
@@ -90,7 +277,7 @@ Contacts.addContact(newPerson, (err) => {
       //friction: 8
     }).start();
   }
-
+// this method  close modal
   closeModalBottom() {
     Animated.spring(this.state.bounceValue, {
       toValue: height,
@@ -100,6 +287,7 @@ Contacts.addContact(newPerson, (err) => {
       //friction: 8
     }).start();
   }
+  // this method render  avatar
   renderAvatar = () => {
     return (
       <View style={styles.avatar}>
@@ -111,6 +299,7 @@ Contacts.addContact(newPerson, (err) => {
       </View>
     );
   };
+  // this method render header
   renderHeader = () => {
     return (
       <View style={styles.header}>
@@ -138,7 +327,7 @@ Contacts.addContact(newPerson, (err) => {
       </View>
     );
   };
-
+ //  this method render modal content
   renderCustomField = () => {
     return (
       // render  modal bottom
@@ -162,7 +351,7 @@ Contacts.addContact(newPerson, (err) => {
           <CardItem backgroundColor="transparent">
             <View style={[styles.groupBorder, { justifyContent: "center" }]}>
               <Button
-                onPress={this.closeModalBottom.bind(this)}
+                onPress={() => this.setState({ showBirthday: true })}
                 backgroundColor="trasparent"
                 title="Birthday"
                 buttonStyle={styles.buttonStyles}
@@ -173,7 +362,7 @@ Contacts.addContact(newPerson, (err) => {
           <CardItem>
             <View style={[styles.groupBorder, { justifyContent: "center" }]}>
               <Button
-                onPress={this.closeModalBottom.bind(this)}
+                onPress={() => this.setState({ showWebsite: true })}
                 backgroundColor="trasparent"
                 title="Website"
                 buttonStyle={styles.buttonStyles}
@@ -184,9 +373,20 @@ Contacts.addContact(newPerson, (err) => {
           <CardItem>
             <View style={[styles.groupBorder, { justifyContent: "center" }]}>
               <Button
+                onPress={() => this.setState({ showNotes: true })}
+                backgroundColor="trasparent"
+                title="Notes"
+                buttonStyle={styles.buttonStyles}
+                textStyle={styles.textStyle}
+              />
+            </View>
+          </CardItem>
+          <CardItem>
+            <View style={[styles.groupBorder, { justifyContent: "center" }]}>
+              <Button
                 onPress={this.closeModalBottom.bind(this)}
                 backgroundColor="trasparent"
-                title="Add another field"
+                title="Close"
                 buttonStyle={styles.buttonStyles}
                 textStyle={styles.textStyle}
               />
@@ -202,31 +402,82 @@ Contacts.addContact(newPerson, (err) => {
         {this.renderHeader()}
         <ScrollView>
           {this.renderAvatar()}
-          <View style={{ marginTop: 60, padding: 10 }}>
+          <View style={{ padding: 10 }}>
             <CardItem>
               <Input
+                autoFocus={true}
                 value={this.state.givenName}
-                placeholder="GivenName"
+                placeholder="Given Name"
                 onChangeText={givenName => {
                   this.setState({ givenName });
                 }}
               />
+              {this.state.givenName != "" && (
+                <Icon
+                  onPress={this.clearInput.bind(this, "givenName")}
+                  name="minuscircleo"
+                  style={styles.iconMinus}
+                  size={20}
+                />
+              )}
             </CardItem>
             <CardItem>
               <Input
                 value={this.state.middleName}
-                placeholder="MiddleName"
+                placeholder="Middle Name"
                 onChangeText={middleName => {
                   this.setState({ middleName });
                 }}
               />
+              {this.state.middleName != "" && (
+                <Icon
+                  onPress={this.clearInput.bind(this, "middleName")}
+                  name="minuscircleo"
+                  style={styles.iconMinus}
+                  size={20}
+                />
+              )}
             </CardItem>
             <CardItem>
               <Input
                 value={this.state.familyName}
-                placeholder="FamilyName"
+                placeholder="Family Name"
                 onChangeText={familyName => {
                   this.setState({ familyName });
+                }}
+              />
+              {this.state.familyName != "" && (
+                <Icon
+                  onPress={this.clearInput.bind(this, "familyName")}
+                  name="minuscircleo"
+                  style={styles.iconMinus}
+                  size={20}
+                />
+              )}
+            </CardItem>
+            <CardItem>
+              <Input
+                value={this.state.company}
+                placeholder="Company"
+                onChangeText={company => {
+                  this.setState({ company });
+                }}
+              />
+              {this.state.company != "" && (
+                <Icon
+                  onPress={this.clearInput.bind(this, "company")}
+                  name="minuscircleo"
+                  style={styles.iconMinus}
+                  size={20}
+                />
+              )}
+            </CardItem>
+            <CardItem>
+              <Input
+                value={this.state.jobTitle}
+                placeholder="Title"
+                onChangeText={jobTitle => {
+                  this.setState({ jobTitle });
                 }}
               />
             </CardItem>
@@ -261,6 +512,14 @@ Contacts.addContact(newPerson, (err) => {
                     this.setState({ number });
                   }}
                 />
+                {this.state.number != "" && (
+                  <Icon
+                    onPress={this.clearInput.bind(this, "number")}
+                    name="minuscircleo"
+                    style={styles.iconMinus}
+                    size={20}
+                  />
+                )}
               </View>
             </CardItem>
             <CardItem>
@@ -293,8 +552,19 @@ Contacts.addContact(newPerson, (err) => {
                     this.setState({ email });
                   }}
                 />
+                {this.state.email != "" && (
+                  <Icon
+                    onPress={this.clearInput.bind(this, "email")}
+                    name="minuscircleo"
+                    style={styles.iconMinus}
+                    size={20}
+                  />
+                )}
               </View>
             </CardItem>
+            {this.state.showBirthday && this.renderBirthday()}
+            {this.state.showNotes && this.renderNotes()}
+            {this.state.showWebsite && this.renderWebsite()}
             <CardItem>
               <View style={[styles.groupBorder, { justifyContent: "center" }]}>
                 <Button
@@ -333,13 +603,12 @@ const styles = StyleSheet.create({
   avatar: {
     flex: 1,
     alignItems: "center",
-    height: 120,
     marginTop: 10
   },
   image: {
     justifyContent: "center",
-    width: 90,
-    height: 90,
+    width: 46,
+    height: 46,
     borderRadius: 100
   },
   headerLeft: {
@@ -412,7 +681,13 @@ const styles = StyleSheet.create({
     padding: 10
   },
   buttonStyles: { width: width, justifyContent: "flex-start" },
-  textStyle: { color: Colors.text, fontSize: 16 }
+  textStyle: { color: Colors.text, fontSize: 16 },
+  iconMinus: {
+    color: "#ff7979",
+    position: "relative",
+    left: 0,
+    top: 10
+  }
 });
 const mapStateToProps = state => {
   return {
