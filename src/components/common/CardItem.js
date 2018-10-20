@@ -17,7 +17,6 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         flexDirection: 'row',
         padding: 5,
-        backgroundColor: '#fff',
         marginBottom: 10,
     },
 });
