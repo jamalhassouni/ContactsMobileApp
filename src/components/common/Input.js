@@ -6,6 +6,7 @@ const Input = ( props ) => (
      {props.label && ( <Text style={styles.label}>{props.label}</Text>)}
 
     <TextInput
+      autoFocus={props.autoFocus || false}
       keyboardType={props.keyboardType}
       value={props.value}
       placeholder={props.placeholder}
@@ -13,6 +14,9 @@ const Input = ( props ) => (
       autoCorrect={false}
       autoCapitalize='none'
       onChangeText={props.onChangeText}
+      onFocus={props.onFocus}
+      onBlur={props.onBlur}
+      editable={props.editable || true}
       style={props.inputStyle || styles.input}
     />
   </View>
