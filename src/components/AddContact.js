@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import {
   PermissionsAndroid,
-  Platform,
   ScrollView,
   Image,
   Text,
@@ -20,6 +19,7 @@ import { Button } from "react-native-elements";
 import Icon from "react-native-vector-icons/AntDesign";
 import { Input, CardItem } from "./common";
 import Colors from "./common/Colors";
+import Message from "./common/Toast";
 const { width, height } = Dimensions.get("window");
 class AddContact extends Component {
   constructor(props) {
@@ -29,7 +29,6 @@ class AddContact extends Component {
       givenName: "",
       familyName: "",
       middleName: "",
-      emailAddresses: [],
       label: "mobile",
       number: "",
       labelEmail: "work",
@@ -47,31 +46,19 @@ class AddContact extends Component {
       month: "",
       day: "",
       year: "",
-      error: ""
+      error: "",
+      icon: "downcircleo",
+      showAllInputNames: false,
+      suffix: "",
+      prefix: ""
     };
   }
-  componentDidMount() {
-    /*
-    var newPerson = {
-  emailAddresses: [{
-    label: "work",
-    email: "mrniet@example.com",
-  }],
-  familyName: "Nietzsche",
-  givenName: "Friedrich",
-}
+  componentDidMount() {}
 
-Contacts.addContact(newPerson, (err) => {
-  if (err) throw err;
-  // save successful
-})
-
-    */
-  }
   onBack = () => {
     this.props.navigation.navigate("contacts");
   };
- // this method  save  contact in addressBook
+  // this method  save  contact in addressBook
   onSave = () => {
     let newContact = {
       familyName: this.state.familyName,
@@ -102,12 +89,35 @@ Contacts.addContact(newPerson, (err) => {
         month: this.state.month,
         day: this.state.day
       },
-      note: this.state.note
+      note: this.state.note,
+      prefix: this.state.prefix,
+      suffix: this.state.suffix
     };
     // Todo : Add new contact
-    console.log("new contact ", newContact);
+    if (
+      this.state.givenName.trim() != "" &&
+      this.state.familyName.trim() != "" &&
+      this.state.number.trim() != ""
+    ) {
+      PermissionsAndroid.check(
+        PermissionsAndroid.PERMISSIONS.WRITE_CONTACTS
+      ).then(granted => {
+        if (granted) {
+          // Add new contact
+          Contacts.addContact(newContact, err => {
+            if (err) throw err;
+            // save successful
+            Message("Contact Added successfully");
+            this.clearInput("all");
+            this.props.navigation.navigate("contacts", { refresh: true });
+          });
+        }
+      });
+    } else {
+      Message("Please check the fields");
+    }
   };
-      // this method  clear  input data and reset state for each  input
+  // this method  clear  input data and reset state for each  input
   clearInput = type => {
     switch (type) {
       case "givenName":
@@ -117,7 +127,13 @@ Contacts.addContact(newPerson, (err) => {
       case "middleName":
         return this.setState({ middleName: "" });
       case "date":
-        return this.setState({ birthday: "Date", showBirthday: false });
+        return this.setState({
+          birthday: "Date",
+          year: "",
+          month: "",
+          day: "",
+          showBirthday: false
+        });
       case "number":
         return this.setState({ number: "" });
       case "email":
@@ -126,8 +142,26 @@ Contacts.addContact(newPerson, (err) => {
         return this.setState({ note: "" });
       case "website":
         return this.setState({ website: "" });
+      case "prefix":
+        return this.setState({ prefix: "" });
+      case "suffix":
+        return this.setState({ suffix: "" });
       case "company":
         return this.setState({ company: "", jobTitle: "" });
+      case "all":
+        return this.setState({
+          givenName: "",
+          familyName: "",
+          middleName: "",
+          number: "",
+          email: "",
+          note: "",
+          website: "",
+          prefix: "",
+          suffix: "",
+          company: "",
+          jobTitle: ""
+        });
     }
   };
 
@@ -157,7 +191,7 @@ Contacts.addContact(newPerson, (err) => {
       day: day
     });
   };
-    //  this method render  Birtday input
+  //  this method render  Birtday input
 
   renderBirthday = () => {
     this.closeModalBottom();
@@ -265,6 +299,14 @@ Contacts.addContact(newPerson, (err) => {
       </CardItem>
     );
   };
+  // this method render  all name inputs
+  showNamesInputs = () => {
+    if (this.state.showAllInputNames) {
+      this.setState({ icon: "downcircleo", showAllInputNames: false });
+    } else {
+      this.setState({ icon: "upcircleo", showAllInputNames: true });
+    }
+  };
   // this method  show modal
   openModalButtom() {
     //This will animate the transalteY of the modal bottom between 0 & 100 depending on its current state
@@ -277,7 +319,7 @@ Contacts.addContact(newPerson, (err) => {
       //friction: 8
     }).start();
   }
-// this method  close modal
+  // this method  close modal
   closeModalBottom() {
     Animated.spring(this.state.bounceValue, {
       toValue: height,
@@ -327,7 +369,7 @@ Contacts.addContact(newPerson, (err) => {
       </View>
     );
   };
- //  this method render modal content
+  //  this method render modal content
   renderCustomField = () => {
     return (
       // render  modal bottom
@@ -403,6 +445,25 @@ Contacts.addContact(newPerson, (err) => {
         <ScrollView>
           {this.renderAvatar()}
           <View style={{ padding: 10 }}>
+            {this.state.showAllInputNames && (
+              <CardItem>
+                <Input
+                  value={this.state.prefix}
+                  placeholder="Name prefix"
+                  onChangeText={prefix => {
+                    this.setState({ prefix });
+                  }}
+                />
+                {this.state.prefix != "" && (
+                  <Icon
+                    onPress={this.clearInput.bind(this, "prefix")}
+                    name="minuscircleo"
+                    style={styles.iconMinus}
+                    size={20}
+                  />
+                )}
+              </CardItem>
+            )}
             <CardItem>
               <Input
                 autoFocus={true}
@@ -420,24 +481,32 @@ Contacts.addContact(newPerson, (err) => {
                   size={20}
                 />
               )}
-            </CardItem>
-            <CardItem>
-              <Input
-                value={this.state.middleName}
-                placeholder="Middle Name"
-                onChangeText={middleName => {
-                  this.setState({ middleName });
-                }}
+              <Icon
+                onPress={this.showNamesInputs}
+                name={this.state.icon}
+                style={styles.icon}
+                size={20}
               />
-              {this.state.middleName != "" && (
-                <Icon
-                  onPress={this.clearInput.bind(this, "middleName")}
-                  name="minuscircleo"
-                  style={styles.iconMinus}
-                  size={20}
-                />
-              )}
             </CardItem>
+            {this.state.showAllInputNames && (
+              <CardItem>
+                <Input
+                  value={this.state.middleName}
+                  placeholder="Middle Name"
+                  onChangeText={middleName => {
+                    this.setState({ middleName });
+                  }}
+                />
+                {this.state.middleName != "" && (
+                  <Icon
+                    onPress={this.clearInput.bind(this, "middleName")}
+                    name="minuscircleo"
+                    style={styles.iconMinus}
+                    size={20}
+                  />
+                )}
+              </CardItem>
+            )}
             <CardItem>
               <Input
                 value={this.state.familyName}
@@ -455,6 +524,25 @@ Contacts.addContact(newPerson, (err) => {
                 />
               )}
             </CardItem>
+            {this.state.showAllInputNames && (
+              <CardItem>
+                <Input
+                  value={this.state.suffix}
+                  placeholder="Name suffix"
+                  onChangeText={suffix => {
+                    this.setState({ suffix });
+                  }}
+                />
+                {this.state.suffix != "" && (
+                  <Icon
+                    onPress={this.clearInput.bind(this, "suffix")}
+                    name="minuscircleo"
+                    style={styles.iconMinus}
+                    size={20}
+                  />
+                )}
+              </CardItem>
+            )}
             <CardItem>
               <Input
                 value={this.state.company}
@@ -687,9 +775,19 @@ const styles = StyleSheet.create({
     position: "relative",
     left: 0,
     top: 10
+  },
+  icon: {
+    width: 20,
+    height: 20,
+    color: "#95afc0",
+    position: "relative",
+    left: 0,
+    top: 10,
+    marginLeft: 10
   }
 });
 const mapStateToProps = state => {
+  console.log(state);
   return {
     contacts: state.contacts.data
   };
