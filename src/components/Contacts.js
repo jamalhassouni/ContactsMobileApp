@@ -36,14 +36,11 @@ class ContactsComponents extends PureComponent {
   }
   componentDidMount() {
     if (Platform.OS == "android") {
-      PermissionsAndroid.requestMultiple(
-        [
-          PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
-          PermissionsAndroid.PERMISSIONS.WRITE_CONTACTS,
-          PermissionsAndroid.PERMISSIONS.CALL_PHONE
-        ]
-      )
-      .catch(err => {
+      PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
+        PermissionsAndroid.PERMISSIONS.WRITE_CONTACTS,
+        PermissionsAndroid.PERMISSIONS.CALL_PHONE
+      ]).catch(err => {
         console.log("PermissionsAndroid", err);
       });
     }
@@ -52,29 +49,27 @@ class ContactsComponents extends PureComponent {
     });
     this._fetchData();
   }
-   componentWillReceiveProps(nextProps){
-     if(nextProps.navigation.state.params.refresh){
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.navigation.state.params.refresh) {
       this._fetchData();
-      console.log("refresh ",nextProps.navigation.state.params.refresh);
-        this.props.navigation.setParams({
-          refresh: false,
-        });
-
-     }
-   }
+      this.props.navigation.setParams({
+        refresh: false
+      });
+    }
+  }
   _fetchData = () => {
-    PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_CONTACTS).then((granted) =>{
-      if(granted){
-        Contacts.getAll((err, contacts) => {
-          this.props.fetchContact(uniqueList(contacts));
-          this.props.navigation.setParams({
-            label: `${this.props.countList} Contacts`
+    PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_CONTACTS).then(
+      granted => {
+        if (granted) {
+          Contacts.getAll((err, contacts) => {
+            this.props.fetchContact(uniqueList(contacts));
+            this.props.navigation.setParams({
+              label: `${this.props.countList} Contacts`
+            });
           });
-        });
-
+        }
       }
-     });
-
+    );
   };
   _onRefresh = () => {
     this._fetchData();
@@ -234,7 +229,6 @@ const styles = StyleSheet.create({
   }
 });
 const mapStateToProps = state => {
-
   return {
     contacts: state.contacts.data,
     fullData: state.contacts.fullData,
