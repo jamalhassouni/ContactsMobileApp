@@ -312,7 +312,7 @@ class Details extends Component {
           icon="edit"
           size={18}
           backgroundColor={colors[0]}
-          onPress={() => console.log("yes!")}
+          onPress={() =>this.props.navigation.navigate('EditContact')}
         />
         {ModalTop}
         {ModalBottom}
