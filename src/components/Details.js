@@ -15,6 +15,7 @@ import Contacts from "react-native-contacts";
 import { connect } from "react-redux";
 import { FloatingMenu } from "./common";
 import { avatarLetter, uniqueNumber } from "./common/Helper";
+import Message from './common/Toast';
 import { Button, Avatar, List, ListItem, Icon } from "react-native-elements";
 import allGradients from "../gradients.json";
 import sampleSize from "lodash/sampleSize";
@@ -68,8 +69,7 @@ class Details extends Component {
           (err, recordId) => {
             if (err) throw err;
             // contact deleted
-            console.log("deleted ", recordId);
-            // TODO :  update  contcts state in  Contacts components
+            Message('Successfully deleted');
             this.props.navigation.navigate("contacts", { refresh: true });
           }
         );
