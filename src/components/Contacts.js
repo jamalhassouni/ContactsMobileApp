@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import {
   PermissionsAndroid,
   Platform,
@@ -30,7 +30,7 @@ import {
 } from "react-native-elements";
 import Swipeable from "react-native-swipeable";
 
-class ContactsComponents extends PureComponent {
+class ContactsComponents extends Component {
   constructor(props) {
     super(props);
   }
@@ -48,6 +48,13 @@ class ContactsComponents extends PureComponent {
       label: `${this.props.countList} Contacts`
     });
     this._fetchData();
+  }
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.contacts !== nextProps.contacts) {
+      return true;
+    }
+
+    return false;
   }
   componentWillReceiveProps(nextProps) {
     if (nextProps.navigation.state.params.refresh) {
