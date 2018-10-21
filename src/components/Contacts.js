@@ -202,7 +202,7 @@ class ContactsComponents extends PureComponent {
           />
         </List>
         {this.renderFooter()}
-        <FloatingMenu size={18} onPress={this.onClickAddContact} />
+        <FloatingMenu icon="user-plus" size={18} onPress={this.onClickAddContact} />
       </SafeAreaView>
     );
   }
