@@ -5,8 +5,9 @@ import ContactsComponents from "./components/Contacts";
 import Details from "./components/Details";
 import Options from "./components/Options";
 import AddContact from "./components/AddContact";
+import EditContact from "./components/EditContact";
 import { Header } from "react-native-elements";
-import Colors from  './components/common/Colors';
+import Colors from "./components/common/Colors";
 
 const transitionConfig = () => {
   return {
@@ -118,6 +119,13 @@ const Routes = createStackNavigator(
       screen: AddContact,
       navigationOptions: () => ({
         title: "AddContact",
+        header: null
+      })
+    },
+    EditContact: {
+      screen: EditContact,
+      navigationOptions: () => ({
+        title: "EditContact",
         header: null
       })
     }
