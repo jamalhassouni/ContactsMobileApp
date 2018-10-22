@@ -96,7 +96,6 @@ class AddContact extends Component {
     // Todo : Add new contact
     if (
       this.state.givenName.trim() != "" &&
-      this.state.familyName.trim() != "" &&
       this.state.number.trim() != ""
     ) {
       PermissionsAndroid.check(
