@@ -20,8 +20,7 @@ export const SearchContacts = (searchContacts, query) => {
   return dispatch => {
     if (query !== "") {
       dispatch({ type: "searching", payload: searchContacts, query: query });
-    } else {
-      console.log("done", searchContacts.length);
+    }else {
       dispatch({
         type: "searchDone",
         payload: searchContacts,

@@ -31,6 +31,10 @@ class ContactsComponents extends Component {
     super(props);
   }
   componentDidMount() {
+    /**
+     *  check if paltform is android
+     * then request android required permissions
+     */
     if (Platform.OS == "android") {
       PermissionsAndroid.requestMultiple([
         PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
@@ -45,6 +49,12 @@ class ContactsComponents extends Component {
     });
     this._fetchData();
   }
+
+  /**
+   * check if  nextProps not equal this.props.contacts
+   * then  return true for update component
+   * if not equal return false
+   */
   shouldComponentUpdate(nextProps, nextState) {
     if (this.props.contacts !== nextProps.contacts) {
       return true;
@@ -53,6 +63,19 @@ class ContactsComponents extends Component {
     return false;
   }
   componentWillReceiveProps(nextProps) {
+    /*
+     * check if count list not  equal this.props.countList
+     * then  set Params to  update count in header
+     */
+    if (nextProps.countList !== this.props.countList) {
+      this.props.navigation.setParams({
+        label: `${nextProps.countList} Contacts`
+      });
+    }
+    /**
+     * check if has params refresh
+     * then  refresh data
+     */
     if (nextProps.navigation.state.params.refresh) {
       this._fetchData();
       this.props.navigation.setParams({
@@ -60,46 +83,49 @@ class ContactsComponents extends Component {
       });
     }
   }
+  // this method for  fetch all contact form  addressBook
   _fetchData = () => {
+    /**
+     *  check if READ_CONTACTS permission is granted
+     * then fetch data
+     * otherwise, don't fetch data
+     */
     PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.READ_CONTACTS).then(
       granted => {
         if (granted) {
           Contacts.getAll((err, contacts) => {
             this.props.fetchContact(uniqueList(contacts));
-            this.props.navigation.setParams({
-              label: `${this.props.countList} Contacts`
-            });
           });
         }
       }
     );
   };
+  // this method for refresh list data
   _onRefresh = () => {
     this._fetchData();
-    this.props.navigation.setParams({
-      label: `${this.props.countList} Contacts`
-    });
   };
 
+  // this method to navigate to the details page with selected contact
   onContactSelected = contact => {
     this.props.selectContact(contact);
     this.props.navigation.navigate("details");
   };
 
+  // this method to navigate to the AddContact page
   onClickAddContact = () => {
     this.props.navigation.navigate("AddContact");
   };
+
+  // this method to handle search
   handleSearch = text => {
     const formattedQuery = text.trim().toLowerCase();
     const data = filter(this.props.fullData, user => {
       return _contains(user, formattedQuery);
     });
     this.props.SearchContacts(data, text);
-    this.props.navigation.setParams({
-      label: `${this.props.countList} Contacts`
-    });
   };
 
+  // this method for render separator between ListItem
   renderSeparator = () => {
     return (
       <View
@@ -113,6 +139,7 @@ class ContactsComponents extends Component {
     );
   };
 
+  // this method for render header
   renderHeader = () => {
     return (
       <SearchBar
@@ -126,6 +153,8 @@ class ContactsComponents extends Component {
       />
     );
   };
+
+  // this method for check if openUrl supported or not
   lanuchUrl(url) {
     Linking.canOpenURL(url).then(supported => {
       if (!supported) {
@@ -136,10 +165,14 @@ class ContactsComponents extends Component {
       }
     });
   }
+
+  // this method to  open default android messenger
   textContact(phone) {
     const url = `sms:${phone}`;
     this.lanuchUrl(url);
   }
+
+  // this method for call to  contact phone number
   callContact(phone) {
     PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CALL_PHONE).then(
       granted => {
@@ -150,6 +183,8 @@ class ContactsComponents extends Component {
       }
     );
   }
+
+  //this method for render each  Contact
   renderContact = ({ item }) => {
     const middleName = item.middleName || "";
     const givenName = item.givenName || "";
@@ -209,6 +244,8 @@ class ContactsComponents extends Component {
       </Swipeable>
     );
   };
+
+  // this method for render footer
   renderFooter = () => {
     if (!this.props.loading) return null;
     return (
