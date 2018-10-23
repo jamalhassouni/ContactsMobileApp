@@ -4,6 +4,7 @@ import {
   Platform,
   View,
   FlatList,
+  Linking,
   StyleSheet,
   ActivityIndicator,
   SafeAreaView,
@@ -21,14 +22,9 @@ import {
   _contains
 } from "./common/Helper";
 import { FloatingMenu } from "./common";
-import {
-  List,
-  ListItem,
-  SearchBar,
-  Button,
-  Avatar
-} from "react-native-elements";
+import { Icon, List, ListItem, SearchBar, Avatar } from "react-native-elements";
 import Swipeable from "react-native-swipeable";
+import RNImmediatePhoneCall from "react-native-immediate-phone-call";
 
 class ContactsComponents extends Component {
   constructor(props) {
@@ -130,7 +126,30 @@ class ContactsComponents extends Component {
       />
     );
   };
-
+  lanuchUrl(url) {
+    Linking.canOpenURL(url).then(supported => {
+      if (!supported) {
+        // Show  end user Message
+        Alert.alert("App Not supported");
+      } else {
+        Linking.openURL(url);
+      }
+    });
+  }
+  textContact(phone) {
+    const url = `sms:${phone}`;
+    this.lanuchUrl(url);
+  }
+  callContact(phone) {
+    PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.CALL_PHONE).then(
+      granted => {
+        if (granted) {
+          //  Initiate immediate phone call
+          RNImmediatePhoneCall.immediatePhoneCall(phone);
+        }
+      }
+    );
+  }
   renderContact = ({ item }) => {
     const middleName = item.middleName || "";
     const givenName = item.givenName || "";
@@ -141,13 +160,35 @@ class ContactsComponents extends Component {
     let i = sumChars(givenName) % defaultColors.length;
     let background = defaultColors[i];
     const leftContent = (
-      <Button buttonStyle={styles.buttons} title="Show Contact" />
+      <View style={styles.leftSwipeItem}>
+        <Icon
+          name={"phone"}
+          type="font-awesome"
+          size={30}
+          underlayColor={"rgba(255,255,255,0)"}
+          color={"#ee5253"}
+        />
+      </View>
     );
+    const rightContent = (
+      <View style={styles.rightSwipeItem}>
+        <Icon
+          name={"textsms"}
+          size={30}
+          underlayColor={"rgba(255,255,255,0)"}
+          color={"#00d2d3"}
+        />
+      </View>
+    );
+
     return (
       <Swipeable
-        leftButtonWidth={100}
+        leftActionActivationDistance={100}
         leftContent={leftContent}
-        onLeftActionRelease={this.onContactSelected.bind(this, item)}
+        rightActionActivationDistance={100}
+        rightContent={rightContent}
+        onLeftActionRelease={this.callContact.bind(this, phone)}
+        onRightActionRelease={this.textContact.bind(this, phone)}
       >
         <ListItem
           onPress={this.onContactSelected.bind(this, item)}
@@ -209,7 +250,11 @@ class ContactsComponents extends Component {
           />
         </List>
         {this.renderFooter()}
-        <FloatingMenu icon="user-plus" size={18} onPress={this.onClickAddContact} />
+        <FloatingMenu
+          icon="user-plus"
+          size={18}
+          onPress={this.onClickAddContact}
+        />
       </SafeAreaView>
     );
   }
@@ -225,14 +270,26 @@ const styles = StyleSheet.create({
     marginTop: 0
   },
   buttons: {
-    backgroundColor: "#324C66",
-    height: 55,
-    marginTop: 5
+    backgroundColor: "transparent"
   },
   SearchBar: {
     borderTopWidth: 0,
     borderBottomWidth: 0,
     backgroundColor: "transparent"
+  },
+  leftSwipeItem: {
+    flex: 1,
+    alignItems: "flex-end",
+    justifyContent: "center",
+    paddingRight: 20,
+    backgroundColor: "#fff"
+  },
+  rightSwipeItem: {
+    alignItems: "flex-start",
+    backgroundColor: "#fff",
+    flex: 1,
+    justifyContent: "center",
+    paddingLeft: 20
   }
 });
 const mapStateToProps = state => {
