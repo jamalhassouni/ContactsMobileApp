@@ -93,11 +93,7 @@ class AddContact extends Component {
       prefix: this.state.prefix,
       suffix: this.state.suffix
     };
-    // Todo : Add new contact
-    if (
-      this.state.givenName.trim() != "" &&
-      this.state.number.trim() != ""
-    ) {
+    if (this.state.givenName.trim() != "" && this.state.number.trim() != "") {
       PermissionsAndroid.check(
         PermissionsAndroid.PERMISSIONS.WRITE_CONTACTS
       ).then(granted => {
@@ -786,7 +782,6 @@ const styles = StyleSheet.create({
   }
 });
 const mapStateToProps = state => {
-  console.log(state);
   return {
     contacts: state.contacts.data
   };
