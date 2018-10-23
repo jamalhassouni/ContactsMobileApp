@@ -50,12 +50,22 @@ class AddContact extends Component {
       icon: "downcircleo",
       showAllInputNames: false,
       suffix: "",
-      prefix: ""
+      prefix: "",
+      editing: false,
+      modalType: ""
     };
   }
   componentDidMount() {}
 
   onBack = () => {
+    if (this.state.editing) {
+      this.openModalButtom("confirmBack");
+      console.log("yes show ");
+    } else {
+      this.props.navigation.navigate("contacts");
+    }
+  };
+  ForceBack = () => {
     this.props.navigation.navigate("contacts");
   };
   // this method  save  contact in addressBook
@@ -116,33 +126,34 @@ class AddContact extends Component {
   clearInput = type => {
     switch (type) {
       case "givenName":
-        return this.setState({ givenName: "" });
+        return this.setState({ givenName: "", editing: true });
       case "familyName":
-        return this.setState({ familyName: "" });
+        return this.setState({ familyName: "", editing: true });
       case "middleName":
-        return this.setState({ middleName: "" });
+        return this.setState({ middleName: "", editing: true });
       case "date":
         return this.setState({
           birthday: "Date",
           year: "",
           month: "",
           day: "",
-          showBirthday: false
+          showBirthday: false,
+          editing: true
         });
       case "number":
-        return this.setState({ number: "" });
+        return this.setState({ number: "", editing: true });
       case "email":
-        return this.setState({ email: "" });
+        return this.setState({ email: "", editing: true });
       case "note":
-        return this.setState({ note: "" });
+        return this.setState({ note: "", editing: true });
       case "website":
-        return this.setState({ website: "" });
+        return this.setState({ website: "", editing: true });
       case "prefix":
-        return this.setState({ prefix: "" });
+        return this.setState({ prefix: "", editing: true });
       case "suffix":
-        return this.setState({ suffix: "" });
+        return this.setState({ suffix: "", editing: true });
       case "company":
-        return this.setState({ company: "", jobTitle: "" });
+        return this.setState({ company: "", jobTitle: "", editing: true });
       case "all":
         return this.setState({
           givenName: "",
@@ -155,7 +166,8 @@ class AddContact extends Component {
           prefix: "",
           suffix: "",
           company: "",
-          jobTitle: ""
+          jobTitle: "",
+          editing: true
         });
     }
   };
@@ -183,7 +195,7 @@ class AddContact extends Component {
       birthday: birh,
       year: year,
       month: month + 1,
-      day: day
+      day: day,
     });
   };
   //  this method render  Birtday input
@@ -255,7 +267,7 @@ class AddContact extends Component {
               value={this.state.website}
               placeholder="Website"
               onChangeText={website => {
-                this.setState({ website });
+                this.setState({ website: website });
               }}
             />
             {this.state.website != "" && (
@@ -280,7 +292,7 @@ class AddContact extends Component {
           value={this.state.note}
           placeholder="Notes"
           onChangeText={note => {
-            this.setState({ note });
+            this.setState({ note: note });
           }}
         />
         {this.state.note != "" && (
@@ -303,7 +315,8 @@ class AddContact extends Component {
     }
   };
   // this method  show modal
-  openModalButtom() {
+  openModalButtom(type) {
+    this.setState({ modalType: type });
     //This will animate the transalteY of the modal bottom between 0 & 100 depending on its current state
     //100 comes from the style below, which is the height of the modal bottom.
     Animated.spring(this.state.bounceValue, {
@@ -354,7 +367,7 @@ class AddContact extends Component {
         </View>
         <View style={styles.headerRight}>
           <Button
-            onPress={this.onSave}
+            onPress={this.onSave.bind(this)}
             backgroundColor={Colors.white}
             buttonStyle={[styles.buttonCancel, { borderColor: Colors.header }]}
             title="Save"
@@ -365,73 +378,126 @@ class AddContact extends Component {
     );
   };
   //  this method render modal content
-  renderCustomField = () => {
-    return (
-      // render  modal bottom
-      <Animated.View
-        style={[
-          styles.ModalBottom,
-          { transform: [{ translateY: this.state.bounceValue }] }
-        ]}
-      >
-        <ScrollView>
-          <Text
-            style={{
-              textAlign: "center",
-              fontSize: 16,
-              fontWeight: "bold",
-              marginBottom: 5
-            }}
+  renderCustomField = type => {
+    switch (type) {
+      case "addAnotherField":
+        return (
+          // render  modal bottom
+          <Animated.View
+            style={[
+              styles.ModalBottom,
+              { transform: [{ translateY: this.state.bounceValue }] }
+            ]}
           >
-            Add another field
-          </Text>
-          <CardItem backgroundColor="transparent">
-            <View style={[styles.groupBorder, { justifyContent: "center" }]}>
+            <ScrollView>
+              <Text
+                style={{
+                  textAlign: "center",
+                  fontSize: 16,
+                  fontWeight: "bold",
+                  marginBottom: 5
+                }}
+              >
+                Add another field
+              </Text>
+              <CardItem backgroundColor="transparent">
+                <View
+                  style={[styles.groupBorder, { justifyContent: "center" }]}
+                >
+                  <Button
+                    onPress={() => this.setState({ showBirthday: true })}
+                    backgroundColor="trasparent"
+                    title="Birthday"
+                    buttonStyle={styles.buttonStyles}
+                    textStyle={styles.textStyle}
+                  />
+                </View>
+              </CardItem>
+              <CardItem>
+                <View
+                  style={[styles.groupBorder, { justifyContent: "center" }]}
+                >
+                  <Button
+                    onPress={() => this.setState({ showWebsite: true })}
+                    backgroundColor="trasparent"
+                    title="Website"
+                    buttonStyle={styles.buttonStyles}
+                    textStyle={styles.textStyle}
+                  />
+                </View>
+              </CardItem>
+              <CardItem>
+                <View
+                  style={[styles.groupBorder, { justifyContent: "center" }]}
+                >
+                  <Button
+                    onPress={() => this.setState({ showNotes: true })}
+                    backgroundColor="trasparent"
+                    title="Notes"
+                    buttonStyle={styles.buttonStyles}
+                    textStyle={styles.textStyle}
+                  />
+                </View>
+              </CardItem>
+              <CardItem>
+                <View
+                  style={[styles.groupBorder, { justifyContent: "center" }]}
+                >
+                  <Button
+                    onPress={this.closeModalBottom.bind(this)}
+                    backgroundColor="trasparent"
+                    title="Close"
+                    buttonStyle={styles.buttonStyles}
+                    textStyle={styles.textStyle}
+                  />
+                </View>
+              </CardItem>
+            </ScrollView>
+          </Animated.View>
+        );
+      case "confirmBack":
+        return (
+          <Animated.View
+            style={[
+              styles.ModalBottom,
+              { transform: [{ translateY: this.state.bounceValue }] }
+            ]}
+          >
+            <Text
+              style={{
+                textAlign: "center",
+                fontSize: 16,
+                fontWeight: "bold",
+                marginBottom: 5
+              }}
+            >
+              Cancel
+            </Text>
+            <Text style={{ fontSize: 16, margin: 10 }}>
+              Discard your changes?
+            </Text>
+            <View
+              style={{
+                justifyContent: "center",
+                flexDirection: "row",
+                paddingBottom: 5
+              }}
+            >
               <Button
-                onPress={() => this.setState({ showBirthday: true })}
-                backgroundColor="trasparent"
-                title="Birthday"
-                buttonStyle={styles.buttonStyles}
-                textStyle={styles.textStyle}
+                buttonStyle={styles.mdBottom}
+                titleStyle={{ color: "red" }}
+                onPress={this.ForceBack}
+                title="Yes"
               />
-            </View>
-          </CardItem>
-          <CardItem>
-            <View style={[styles.groupBorder, { justifyContent: "center" }]}>
               <Button
-                onPress={() => this.setState({ showWebsite: true })}
-                backgroundColor="trasparent"
-                title="Website"
-                buttonStyle={styles.buttonStyles}
-                textStyle={styles.textStyle}
-              />
-            </View>
-          </CardItem>
-          <CardItem>
-            <View style={[styles.groupBorder, { justifyContent: "center" }]}>
-              <Button
-                onPress={() => this.setState({ showNotes: true })}
-                backgroundColor="trasparent"
-                title="Notes"
-                buttonStyle={styles.buttonStyles}
-                textStyle={styles.textStyle}
-              />
-            </View>
-          </CardItem>
-          <CardItem>
-            <View style={[styles.groupBorder, { justifyContent: "center" }]}>
-              <Button
+                buttonStyle={styles.mdBottom}
                 onPress={this.closeModalBottom.bind(this)}
-                backgroundColor="trasparent"
-                title="Close"
-                buttonStyle={styles.buttonStyles}
-                textStyle={styles.textStyle}
+                title="Cancel"
               />
             </View>
-          </CardItem>
-        </ScrollView>
-      </Animated.View>
-    );
+          </Animated.View>
+        );
+    }
   };
   render() {
     return (
@@ -446,7 +512,7 @@ class AddContact extends Component {
                   value={this.state.prefix}
                   placeholder="Name prefix"
                   onChangeText={prefix => {
-                    this.setState({ prefix });
+                    this.setState({ prefix: prefix, editing: true });
                   }}
                 />
                 {this.state.prefix != "" && (
@@ -465,7 +531,7 @@ class AddContact extends Component {
                 value={this.state.givenName}
                 placeholder="Given Name"
                 onChangeText={givenName => {
-                  this.setState({ givenName });
+                  this.setState({ givenName: givenName, editing: true });
                 }}
               />
               {this.state.givenName != "" && (
@@ -489,7 +555,7 @@ class AddContact extends Component {
                   value={this.state.middleName}
                   placeholder="Middle Name"
                   onChangeText={middleName => {
-                    this.setState({ middleName });
+                    this.setState({ middleName: middleName, editing: true });
                   }}
                 />
                 {this.state.middleName != "" && (
@@ -507,7 +573,7 @@ class AddContact extends Component {
                 value={this.state.familyName}
                 placeholder="Family Name"
                 onChangeText={familyName => {
-                  this.setState({ familyName });
+                  this.setState({ familyName: familyName, editing: true });
                 }}
               />
               {this.state.familyName != "" && (
@@ -525,7 +591,7 @@ class AddContact extends Component {
                   value={this.state.suffix}
                   placeholder="Name suffix"
                   onChangeText={suffix => {
-                    this.setState({ suffix });
+                    this.setState({ suffix: suffix, editing: true });
                   }}
                 />
                 {this.state.suffix != "" && (
@@ -543,7 +609,7 @@ class AddContact extends Component {
                 value={this.state.company}
                 placeholder="Company"
                 onChangeText={company => {
-                  this.setState({ company });
+                  this.setState({ company: company, editing: true });
                 }}
               />
               {this.state.company != "" && (
@@ -560,7 +626,7 @@ class AddContact extends Component {
                 value={this.state.jobTitle}
                 placeholder="Title"
                 onChangeText={jobTitle => {
-                  this.setState({ jobTitle });
+                  this.setState({ jobTitle: jobTitle, editing: true });
                 }}
               />
             </CardItem>
@@ -570,7 +636,9 @@ class AddContact extends Component {
                   mode="dropdown"
                   selectedValue={this.state.label}
                   style={styles.picker}
-                  onValueChange={value => this.setState({ label: value })}
+                  onValueChange={value =>
+                    this.setState({ label: value, editing: true })
+                  }
                 >
                   <Picker.Item label="Mobile" value="mobile" />
                   <Picker.Item label="Work" value="work" />
@@ -592,7 +660,7 @@ class AddContact extends Component {
                   value={this.state.number}
                   placeholder="Phone"
                   onChangeText={number => {
-                    this.setState({ number });
+                    this.setState({ number: number, editing: true });
                   }}
                 />
                 {this.state.number != "" && (
@@ -611,7 +679,9 @@ class AddContact extends Component {
                   mode="dropdown"
                   selectedValue={this.state.labelEmail}
                   style={styles.picker}
-                  onValueChange={value => this.setState({ labelEmail: value })}
+                  onValueChange={value =>
+                    this.setState({ labelEmail: value, editing: true })
+                  }
                 >
                   <Picker.Item
                     style={{ color: "red" }}
@@ -632,7 +702,7 @@ class AddContact extends Component {
                   value={this.state.email}
                   placeholder="Email"
                   onChangeText={email => {
-                    this.setState({ email });
+                    this.setState({ email: email, editing: true });
                   }}
                 />
                 {this.state.email != "" && (
@@ -651,7 +721,7 @@ class AddContact extends Component {
             <CardItem>
               <View style={[styles.groupBorder, { justifyContent: "center" }]}>
                 <Button
-                  onPress={this.openModalButtom.bind(this)}
+                  onPress={this.openModalButtom.bind(this, "addAnotherField")}
                   backgroundColor={Colors.white}
                   title="Add another field"
                   buttonStyle={{ width: width }}
@@ -661,7 +731,7 @@ class AddContact extends Component {
             </CardItem>
           </View>
         </ScrollView>
-        {this.renderCustomField()}
+        {this.renderCustomField(this.state.modalType)}
       </SafeAreaView>
     );
   }
@@ -779,6 +849,14 @@ const styles = StyleSheet.create({
     left: 0,
     top: 10,
     marginLeft: 10
+  },
+  mdBottom: {
+    backgroundColor: "rgba(92, 99,216, 1)",
+    width: 100,
+    height: 45,
+    borderColor: "transparent",
+    borderWidth: 0,
+    borderRadius: 5
   }
 });
 const mapStateToProps = state => {
