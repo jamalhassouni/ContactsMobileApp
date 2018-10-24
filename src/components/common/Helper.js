@@ -31,6 +31,19 @@ export const sumChars = str => {
   return sum;
 };
 
+export const groupArrayByFirstChar = (arg) => {
+  let data = arg.reduce((r, e) => {
+    let group = e.givenName[0].toUpperCase();
+    if(!r[group]) r[group] = {group, children: [e]}
+    else r[group].children.push(e);
+    return r;
+  }, {})
+
+   let result = Object.values(data);
+   return  result;
+
+};
+
 export const uniqueList = list => {
   list = list.filter(
     (elm, index, self) =>

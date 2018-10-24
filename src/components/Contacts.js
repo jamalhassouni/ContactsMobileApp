@@ -30,7 +30,7 @@ class ContactsComponents extends Component {
   constructor(props) {
     super(props);
   }
-  componentDidMount() {
+  componentWillMount() {
     /**
      *  check if paltform is android
      * then request android required permissions
@@ -186,63 +186,63 @@ class ContactsComponents extends Component {
 
   //this method for render each  Contact
   renderContact = ({ item }) => {
-    const middleName = item.middleName || "";
-    const givenName = item.givenName || "";
-    const familyName = item.familyName || "";
-    const FullName = givenName + " " + middleName + " " + familyName;
-    //const avatar = item.thumbnailPath || "";
-    const phone = item.phoneNumbers[0].number;
-    let i = sumChars(givenName) % defaultColors.length;
-    let background = defaultColors[i];
-    const leftContent = (
-      <View style={styles.leftSwipeItem}>
-        <Icon
-          name={"phone"}
-          type="font-awesome"
-          size={30}
-          underlayColor={"rgba(255,255,255,0)"}
-          color={"#ee5253"}
-        />
-      </View>
-    );
-    const rightContent = (
-      <View style={styles.rightSwipeItem}>
-        <Icon
-          name={"textsms"}
-          size={30}
-          underlayColor={"rgba(255,255,255,0)"}
-          color={"#00d2d3"}
-        />
-      </View>
-    );
+      const middleName = item.middleName || "";
+      const givenName = item.givenName || "";
+      const familyName = item.familyName || "";
+      const FullName = givenName + " " + middleName + " " + familyName;
+      //const avatar = item.thumbnailPath || "";
+      const phone = item.phoneNumbers[0].number;
+      let i = sumChars(givenName) % defaultColors.length;
+      let background = defaultColors[i];
+      const leftContent = (
+        <View style={styles.leftSwipeItem}>
+          <Icon
+            name={"phone"}
+            type="font-awesome"
+            size={30}
+            underlayColor={"rgba(255,255,255,0)"}
+            color={"#ee5253"}
+          />
+        </View>
+      );
+      const rightContent = (
+        <View style={styles.rightSwipeItem}>
+          <Icon
+            name={"textsms"}
+            size={30}
+            underlayColor={"rgba(255,255,255,0)"}
+            color={"#00d2d3"}
+          />
+        </View>
+      );
 
-    return (
-      <Swipeable
-        leftActionActivationDistance={100}
-        leftContent={leftContent}
-        rightActionActivationDistance={100}
-        rightContent={rightContent}
-        onLeftActionRelease={this.callContact.bind(this, phone)}
-        onRightActionRelease={this.textContact.bind(this, phone)}
-      >
-        <ListItem
-          onPress={this.onContactSelected.bind(this, item)}
-          roundAvatar
-          title={FullName}
-          subtitle={phone}
-          avatar={
-            <Avatar
-              size="small"
-              rounded
-              overlayContainerStyle={{ backgroundColor: background }}
-              title={avatarLetter(givenName)}
-              activeOpacity={0.7}
-            />
-          }
-          containerStyle={{ borderBottomWidth: 0 }}
-        />
-      </Swipeable>
-    );
+      return (
+        <Swipeable
+          leftActionActivationDistance={100}
+          leftContent={leftContent}
+          rightActionActivationDistance={100}
+          rightContent={rightContent}
+          onLeftActionRelease={this.callContact.bind(this, phone)}
+          onRightActionRelease={this.textContact.bind(this, phone)}
+        >
+          <ListItem
+            onPress={this.onContactSelected.bind(this, item)}
+            roundAvatar
+            title={FullName}
+            subtitle={phone}
+            avatar={
+              <Avatar
+                size="small"
+                rounded
+                overlayContainerStyle={{ backgroundColor: background }}
+                title={avatarLetter(givenName)}
+                activeOpacity={0.7}
+              />
+            }
+            containerStyle={{ borderBottomWidth: 0 }}
+          />
+        </Swipeable>
+      );
   };
 
   // this method for render footer
