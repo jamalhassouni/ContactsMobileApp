@@ -81,7 +81,8 @@ class EditContact extends Component {
   componentDidMount() {
   console.log(this.props.contact);
   }
-  // Todo : fix modal  show up
+  // TODO: fix modal  show up
+  // FIXME: fix  confim back modal
   onBack = () => {
     if (this.state.editing) {
       this.openModalButtom("confirmBack");
