@@ -15,7 +15,7 @@ import Contacts from "react-native-contacts";
 import { connect } from "react-redux";
 import { FloatingMenu } from "./common";
 import { avatarLetter, uniqueNumber } from "./common/Helper";
-import Message from './common/Toast';
+import Message from "./common/Toast";
 import { Button, Avatar, List, ListItem, Icon } from "react-native-elements";
 import allGradients from "../gradients.json";
 import sampleSize from "lodash/sampleSize";
@@ -69,7 +69,7 @@ class Details extends Component {
           (err, recordId) => {
             if (err) throw err;
             // contact deleted
-            Message('Successfully deleted');
+            Message("Successfully deleted");
             this.props.navigation.navigate("contacts", { refresh: true });
           }
         );
@@ -86,6 +86,7 @@ class Details extends Component {
       }
     });
   }
+  //FIXME: fix confrim modal when  add birthday
   onBack = () => {
     this.props.navigation.navigate("contacts");
   };
@@ -112,10 +113,9 @@ class Details extends Component {
       </View>
     );
   };
-  closeAllModal(){
+  closeAllModal() {
     this.closeModalTop();
     this.closeModalBottom();
-
   }
   openModalTop() {
     this.closeModalBottom();
@@ -312,7 +312,7 @@ class Details extends Component {
           icon="edit"
           size={18}
           backgroundColor={colors[0]}
-          onPress={() =>this.props.navigation.navigate('EditContact')}
+          onPress={() => this.props.navigation.navigate("EditContact")}
         />
         {ModalTop}
         {ModalBottom}
