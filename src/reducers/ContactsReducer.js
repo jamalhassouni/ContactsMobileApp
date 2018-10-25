@@ -4,7 +4,8 @@ const INITIAL_STATE = {
   refreshing: false,
   data: [],
   fullData: [],
-  query: ""
+  query: "",
+  scrolledTO:0
 };
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -32,6 +33,11 @@ export default (state = INITIAL_STATE, action) => {
         data: action.payload,
         count: action.count,
         loading: false
+      };
+    case "changeColor":
+      return {
+        ...state,
+        scrolledTO:action.payload
       };
 
     default:
