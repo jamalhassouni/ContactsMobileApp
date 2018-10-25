@@ -698,7 +698,7 @@ const styles = StyleSheet.create({
   },
   header: {
     width: width,
-    height: 60,
+    height: 45,
     justifyContent: "space-between",
     paddingHorizontal: 15,
     flexDirection: "row",
@@ -721,7 +721,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexDirection: "row",
     position: "absolute",
-    top: 10,
+    top: 0,
     left: 0,
     padding: 8,
     marginBottom: 10
@@ -735,7 +735,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexDirection: "row",
     position: "absolute",
-    top: 10,
+    top: 0,
     right: 0,
     padding: 8,
     marginBottom: 10
@@ -747,7 +747,7 @@ const styles = StyleSheet.create({
   },
   headerCenter: {
     position: "absolute",
-    top: 10,
+    top: 0,
     right: 50,
     left: 50,
     padding: 8,
