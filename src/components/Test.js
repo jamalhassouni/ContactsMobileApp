@@ -3,7 +3,6 @@ import {
   PermissionsAndroid,
   Platform,
   View,
-  FlatList,
   Linking,
   StyleSheet,
   ActivityIndicator,
@@ -11,8 +10,7 @@ import {
   RefreshControl,
   Text,
   ScrollView,
-  Dimensions,
-  findNodeHandle
+  Dimensions
 } from "react-native";
 import Contacts from "react-native-contacts";
 import { connect } from "react-redux";
@@ -36,14 +34,8 @@ let groupRow = [];
 class Test extends Component {
   constructor(props) {
     super(props);
-    this.state ={
-      scrolledTO:0,
+    this.color = "";
     }
-  }
-   componentDidMount = () => {
-     // TODO: change color when pos equal  scrollView pos
-    console.log("scrolledTo",this.state.scrolledTO)
-   };
 
   componentWillMount() {
     /**
@@ -202,13 +194,14 @@ class Test extends Component {
     );
   }
   scrollToRow(index) {
-    this.setState({scrolledTO:index});
-    this.scroller.scrollTo({x: 0, y: index,animated: true});
-
+    this.props.changeColor(index);
+    this.scroller.scrollTo({ x: 0, y: index, animated: true });
   }
+
   scrollToTop = () => {
     this.scroller.scrollTo({ x: 0, y: 0, animated: true });
   };
+
   renderContact = data => {
     return data.map((contact, index) => {
       const middleName = contact.middleName || "";
@@ -296,18 +289,20 @@ class Test extends Component {
       <SafeAreaView style={styles.MainContainer}>
         {this.renderHeader()}
         <View style={styles.rightList}>
-          <Text onPress={this.scrollToTop} style={styles.rightText}>
-            3
-          </Text>
-          {
-this.props.contacts.map((data, key) => {
+          {this.props.contacts.map((data, key) => {
+            if (
+              groupRow[key] != null &&
+              groupRow[key].y == this.props.scrolledTO
+            ) {
+              this.color = "#ff7675";
+            } else {
+              this.color = "#00d2d3";
+            }
             return (
               <Text
                 key={key}
-                onPress={() =>
-                  this.scrollToRow(groupRow[key].y)
-                }
-                style={styles.rightText}
+                onPress={() => this.scrollToRow(groupRow[key].y)}
+                style={[styles.rightText, { color: this.color }]}
               >
                 {data.group}
               </Text>
@@ -317,7 +312,7 @@ this.props.contacts.map((data, key) => {
         <ScrollView
         onScroll={event => {
                     const layout = event.nativeEvent.contentOffset.y;
-                    this.setState({scrolledTO:layout});
+                    this.props.changeColor(layout);
                   }}
           ref={ref => (this.scroller = ref)}
           style={{ width: width - 20 }}
@@ -330,12 +325,28 @@ this.props.contacts.map((data, key) => {
         >
           <List containerStyle={styles.list}>
             {this.props.contacts.map((data, key) => {
+              if (
+              groupRow[key] != null &&
+              groupRow[key].y == this.props.scrolledTO
+            ) {
+              this.backColor = "#ffeaa7";
+              this.pos = 'absolute';
+            } else {
+              this.backColor = "#00b894";
+              this.pos = 'relative';
+            }
               return [
                 <View
+                style={{backgroundColor: this.backColor,top:0}}
                   onLayout={event => {
                     const layout = event.nativeEvent.layout;
-                    groupRow.push({group:data.group,x:layout.x,y:layout.y,height:layout.height,width:layout.width});
-                    console.log('grouprow',groupRow);
+                    groupRow.push({
+                      group: data.group,
+                      x: layout.x,
+                      y: layout.y,
+                      height: layout.height,
+                      width: layout.width
+                    });
                   }}
                   key={key}
                 >
@@ -351,7 +362,6 @@ this.props.contacts.map((data, key) => {
           </List>
         </ScrollView>
         {this.renderFooter()}
-
         <FloatingMenu
           icon="user-plus"
           size={18}
@@ -407,10 +417,10 @@ const styles = StyleSheet.create({
   },
   rightText: {
     textAlign: "center",
-    fontSize: 12,
-    marginTop: 4,
-    fontWeight: "bold",
-    color: "#00d2d3"
+    fontSize: 10,
+    marginTop: 4.5,
+    paddingHorizontal: 4,
+    fontWeight: "bold"
   }
 });
 const mapStateToProps = state => {
@@ -420,7 +430,8 @@ const mapStateToProps = state => {
     countList: state.contacts.count,
     refreshing: state.contacts.refreshing,
     query: state.contacts.query,
-    loading: state.contacts.loading
+    loading: state.contacts.loading,
+    scrolledTO: state.contacts.scrolledTO
   };
 };
 
