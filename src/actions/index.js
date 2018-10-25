@@ -10,7 +10,12 @@ export const RefreshList = () => {
     payload: null
   };
 };
-
+export const changeColor = (scrolledTO) => {
+  return {
+    type: "changeColor",
+    payload: scrolledTO,
+  };
+};
 export const fetchContact = contacts => {
   return dispatch => {
     dispatch({ type: "FETCHING", payload: contacts });
