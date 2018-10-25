@@ -310,6 +310,7 @@ class Test extends Component {
           })}
         </View>
         <ScrollView
+        showsVerticalScrollIndicator={false}
         onScroll={event => {
                     const layout = event.nativeEvent.contentOffset.y;
                     this.props.changeColor(layout);
@@ -332,7 +333,7 @@ class Test extends Component {
               this.backColor = "#ffeaa7";
               this.pos = 'absolute';
             } else {
-              this.backColor = "#00b894";
+              this.backColor = "#fff";
               this.pos = 'relative';
             }
               return [
