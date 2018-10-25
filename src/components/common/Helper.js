@@ -1,3 +1,10 @@
+/*
+ * @name  phoneNumberRegex
+ * @description
+ *  Delete zeros and number +212 or 00 from the phone number
+ * @param number [String]
+ * @returns  String
+*/
 export const phoneNumberRegex = number => {
   let patr = /^(00|\+)?(212)/;
   number = number.replace(patr, "0");
@@ -12,6 +19,9 @@ export const phoneNumberRegex = number => {
 
   return number;
 };
+/**
+ *  Object of colors
+ */
 export const defaultColors = [
   "#2ecc71", // emerald
   "#3498db", // peter river
@@ -22,6 +32,13 @@ export const defaultColors = [
   "#2c3e50" // midnight blue
 ];
 
+/*
+ * @name  sumChars
+ * @description
+ *  Calculate the number of characters in a string
+ * @param str [String]
+ * @returns  Int
+*/
 export const sumChars = str => {
   let sum = 0;
   for (let i = 0; i < str.length; i++) {
@@ -31,19 +48,40 @@ export const sumChars = str => {
   return sum;
 };
 
+/*
+ * @name  groupArrayByFirstChar
+ * @description
+ *  Grouping an array by the first letter in one of its elements
+ * @param arg [Array]
+ * @returns  Array
+ * */
 export const groupArrayByFirstChar = (arg) => {
+  let group;
   let data = arg.reduce((r, e) => {
-    let group = e.givenName[0].toUpperCase();
+   let pattern = /[\u0600-\u06FF-\#\d+]/;
+   if(pattern.test(e.givenName[0])){
+    group = '#';
+   }else{
+    group = e.givenName[0].toUpperCase();
+   }
     if(!r[group]) r[group] = {group, children: [e]}
     else r[group].children.push(e);
     return r;
   }, {})
 
-   let result = Object.values(data);
-   return  result;
+  let result = Object.values(data);
+
+   return  result.sort(alphabetically(true));
 
 };
 
+/*
+ * @name  uniqueList
+ * @description
+ *  Filter an array based on the phone number and return a new array arranged by the first name
+ * @param list [Array]
+ * @returns  Array
+ * */
 export const uniqueList = list => {
   list = list.filter(
     (elm, index, self) =>
@@ -63,6 +101,47 @@ export const uniqueList = list => {
   );
 };
 
+/*
+ * @name  alphabetically
+ * @description
+ *  Sort array alphabetically based on group element
+ * @param ascending [bool]
+ * @returns  Int
+ * */
+export const alphabetically = (ascending) => {
+
+  return (a,b) => {
+    if(a.group.toUpperCase() === null){
+      return 1;
+    }
+    else if(b.group.toUpperCase() === null){
+      return -1;
+    }
+    if(a.group.toUpperCase() === '#'){
+      return 1;
+    }
+    else if(b.group.toUpperCase() === '#'){
+      return -1;
+    }
+    else if(a.group.toUpperCase() === b.group.toUpperCase()){
+      return 0;
+    }
+    else if(ascending) {
+      return a.group.toUpperCase() < b.group.toUpperCase() ? -1 : 1;
+    }
+    else if(!ascending) {
+      return a.group.toUpperCase() < b.group.toUpperCase() ? 1 : -1;
+    }
+  };
+}
+
+/*
+ * @name  uniqueNumber
+ * @description
+ *  Filter an array based on the phone number and return a new array
+ * @param numbers [Array]
+ * @returns  Array
+ * */
 export const uniqueNumber  = numbers =>{
    numbers = numbers.filter(
     (elm, index, self) =>
@@ -79,6 +158,14 @@ export const uniqueNumber  = numbers =>{
   );
   return numbers;
 };
+
+/*
+ * @name  avatarLetter
+ * @description
+ *  return the first letter from a string
+ * @param FullName [String]
+ * @returns  String
+ * */
 export const avatarLetter = FullName => {
   var arregex = /[\u0600-\u06FF]/;
   if (arregex.test(FullName)) {
@@ -91,6 +178,14 @@ export const avatarLetter = FullName => {
   }
 };
 
+/*
+ * @name  _contains
+ * @description
+ *   search from object element
+ * @param user [Object]
+ * @param query [String]
+ * @returns  bool
+ * */
 export const _contains = (user, query) => {
   if (
     user.givenName !== null &&
