@@ -6,6 +6,7 @@ import Details from "./components/Details";
 import Options from "./components/Options";
 import AddContact from "./components/AddContact";
 import EditContact from "./components/EditContact";
+import Test from "./components/Test";
 import { Header } from "react-native-elements";
 import Colors from "./components/common/Colors";
 
@@ -55,7 +56,7 @@ const transitionConfig = () => {
 const Routes = createStackNavigator(
   {
     contacts: {
-      screen: ContactsComponents,
+      screen: Test,
       navigationOptions: ({ navigation }) => ({
         header: (
           <Header
@@ -98,8 +99,8 @@ const Routes = createStackNavigator(
             }}
             outerContainerStyles={{
               backgroundColor: Colors.header,
-              height: 60,
-              alignItems: "flex-start"
+              height: 45,
+              alignItems: "flex-start",
             }}
             leftComponent={{
               icon: "arrow-back",
@@ -138,7 +139,7 @@ const Routes = createStackNavigator(
 const styles = StyleSheet.create({
   outerContainerStyles: {
     backgroundColor: Colors.header,
-    height: 60
+    height: 45,
   }
 });
 export default Routes;
