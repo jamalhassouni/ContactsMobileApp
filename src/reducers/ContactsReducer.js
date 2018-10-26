@@ -34,7 +34,7 @@ export default (state = INITIAL_STATE, action) => {
         count: action.count,
         loading: false
       };
-    case "changeColor":
+    case "changePos":
       return {
         ...state,
         scrolledTO:action.payload

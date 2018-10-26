@@ -10,9 +10,9 @@ export const RefreshList = () => {
     payload: null
   };
 };
-export const changeColor = (scrolledTO) => {
+export const changePosition = (scrolledTO) => {
   return {
-    type: "changeColor",
+    type: "changePos",
     payload: scrolledTO,
   };
 };
