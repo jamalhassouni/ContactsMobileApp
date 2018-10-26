@@ -16,6 +16,12 @@ export const changePosition = (scrolledTO) => {
     payload: scrolledTO,
   };
 };
+export const ChangeGroupPosition = (groupPos) => {
+  return {
+    type: "changeGroup",
+    payload: groupPos,
+  };
+};
 export const fetchContact = contacts => {
   return dispatch => {
     dispatch({ type: "FETCHING", payload: contacts });

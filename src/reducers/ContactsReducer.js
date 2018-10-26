@@ -5,7 +5,8 @@ const INITIAL_STATE = {
   data: [],
   fullData: [],
   query: "",
-  scrolledTO:0
+  scrolledTO:0,
+  groupPos:[]
 };
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -38,6 +39,11 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         scrolledTO:action.payload
+      };
+    case "changeGroup":
+      return {
+        ...state,
+        groupPos:action.payload
       };
 
     default:
