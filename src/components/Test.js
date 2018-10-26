@@ -201,7 +201,10 @@ class Test extends Component {
   scrollToTop = () => {
     this.scroller.scrollTo({ x: 0, y: 0, animated: true });
   };
-
+  onScrollEnd = (e) => {
+    const layout = e.nativeEvent.contentOffset.y;
+    this.props.changeColor(layout);
+  };
   renderContact = data => {
     return data.map((contact, index) => {
       const middleName = contact.middleName || "";
@@ -311,10 +314,8 @@ class Test extends Component {
         </View>
         <ScrollView
         showsVerticalScrollIndicator={false}
-        onScroll={event => {
-                    const layout = event.nativeEvent.contentOffset.y;
-                    this.props.changeColor(layout);
-                  }}
+        onMomentumScrollEnd={(e) =>  this.onScrollEnd(e)}
+        onScrollEndDrag={(e) => this.onScrollEnd(e) }
           ref={ref => (this.scroller = ref)}
           style={{ width: width - 20 }}
           refreshControl={
