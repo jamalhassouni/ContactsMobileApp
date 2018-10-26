@@ -27,14 +27,15 @@ import {
 import { FloatingMenu } from "./common";
 import { Icon, List, ListItem, SearchBar, Avatar } from "react-native-elements";
 import Swipeable from "react-native-swipeable";
+import  Group  from "./Group";
 import RNImmediatePhoneCall from "react-native-immediate-phone-call";
 const { width, height } = Dimensions.get("window");
-let groupRow = [];
 
 class Test extends Component {
   constructor(props) {
     super(props);
     this.color = "";
+    this.groupRow= [];
     }
 
   componentWillMount() {
@@ -90,6 +91,15 @@ class Test extends Component {
         refresh: false
       });
     }
+    /*
+     * check if groupPos not  equal this.props.groupPos
+     * then  update  groupRow Array
+     */
+    if (nextProps.groupPos !==  this.props.groupPos) {
+      this.groupRow = nextProps.groupPos;
+
+    }
+
   }
   // this method for  fetch all contact form  addressBook
   _fetchData = () => {
@@ -194,7 +204,7 @@ class Test extends Component {
     );
   }
   scrollToRow(index) {
-    this.props.changeColor(index);
+    this.props.changePosition(index);
     this.scroller.scrollTo({ x: 0, y: index, animated: true });
   }
 
@@ -203,7 +213,7 @@ class Test extends Component {
   };
   onScrollEnd = (e) => {
     const layout = e.nativeEvent.contentOffset.y;
-    this.props.changeColor(layout);
+    this.props.changePosition(layout);
   };
   renderContact = data => {
     return data.map((contact, index) => {
@@ -294,8 +304,9 @@ class Test extends Component {
         <View style={styles.rightList}>
           {this.props.contacts.map((data, key) => {
             if (
-              groupRow[key] != null &&
-              groupRow[key].y == this.props.scrolledTO
+             // console.log( this.groupPos);
+              this.groupRow[key] != null &&
+              this.groupRow[key].y == this.props.scrolledTO
             ) {
               this.color = "#ff7675";
             } else {
@@ -304,7 +315,7 @@ class Test extends Component {
             return (
               <Text
                 key={key}
-                onPress={() => this.scrollToRow(groupRow[key].y)}
+                onPress={() => this.scrollToRow(this.groupRow[key].y)}
                 style={[styles.rightText, { color: this.color }]}
               >
                 {data.group}
@@ -328,8 +339,8 @@ class Test extends Component {
           <List containerStyle={styles.list}>
             {this.props.contacts.map((data, key) => {
               if (
-              groupRow[key] != null &&
-              groupRow[key].y == this.props.scrolledTO
+              this.groupRow[key] != null &&
+              this.groupRow[key].y == this.props.scrolledTO
             ) {
               this.backColor = "#ffeaa7";
               this.pos = 'absolute';
@@ -338,26 +349,7 @@ class Test extends Component {
               this.pos = 'relative';
             }
               return [
-                <View
-                style={{backgroundColor: this.backColor,top:0}}
-                  onLayout={event => {
-                    const layout = event.nativeEvent.layout;
-                    groupRow.push({
-                      group: data.group,
-                      x: layout.x,
-                      y: layout.y,
-                      height: layout.height,
-                      width: layout.width
-                    });
-                  }}
-                  key={key}
-                >
-                  <ListItem
-                    hideChevron
-                    title={data.group}
-                    containerStyle={{ borderBottomWidth: 0 }}
-                  />
-                </View>,
+                <Group key={key} name={data.group}/>,
                 this.renderContact(data.children)
               ];
             })}
@@ -433,7 +425,8 @@ const mapStateToProps = state => {
     refreshing: state.contacts.refreshing,
     query: state.contacts.query,
     loading: state.contacts.loading,
-    scrolledTO: state.contacts.scrolledTO
+    scrolledTO: state.contacts.scrolledTO,
+    groupPos: state.contacts.groupPos,
   };
 };
 
