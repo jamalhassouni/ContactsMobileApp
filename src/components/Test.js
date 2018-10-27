@@ -218,10 +218,10 @@ class Test extends Component {
   handleScroll = nativeEvent => {
     if (nativeEvent.contentOffset.y == this.props.scrolledTO) {
       //console.log("yes > ");
-      this.backColor = "#ff7675";
+   //   this.backColor = "#ff7675";
     } else {
       //console.log('no <');
-      this.backColor = "#00d2d3";
+     // this.backColor = "#00d2d3";
     }
   };
   renderContact = data => {
@@ -337,7 +337,7 @@ class Test extends Component {
           onMomentumScrollEnd={e => this.onScrollEnd(e)}
           onScrollEndDrag={e => this.onScrollEnd(e)}
           onScroll={({ nativeEvent }) => this.handleScroll(nativeEvent)}
-          scrollEventThrottle={16}
+         // scrollEventThrottle={16}
           ref={ref => (this.scroller = ref)}
           style={{ width: width - 20 }}
           refreshControl={
@@ -419,12 +419,14 @@ const styles = StyleSheet.create({
     paddingLeft: 20
   },
   rightList: {
-    backgroundColor: "transparent",
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: "transparent",
     width: 20,
     height: height,
     position: "absolute",
-    top: 56,
+    top: 0,
     right: 0,
     zIndex: 1
   },
