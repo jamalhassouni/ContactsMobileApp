@@ -27,7 +27,7 @@ import {
 import { FloatingMenu } from "./common";
 import { Icon, List, ListItem, SearchBar, Avatar } from "react-native-elements";
 import Swipeable from "react-native-swipeable";
-import  Group  from "./Group";
+import Group from "./Group";
 import RNImmediatePhoneCall from "react-native-immediate-phone-call";
 const { width, height } = Dimensions.get("window");
 
@@ -35,8 +35,8 @@ class Test extends Component {
   constructor(props) {
     super(props);
     this.color = "";
-    this.groupRow= [];
-    }
+    this.groupRow = [];
+  }
 
   componentWillMount() {
     /**
@@ -95,11 +95,9 @@ class Test extends Component {
      * check if groupPos not  equal this.props.groupPos
      * then  update  groupRow Array
      */
-    if (nextProps.groupPos !==  this.props.groupPos) {
+    if (nextProps.groupPos !== this.props.groupPos) {
       this.groupRow = nextProps.groupPos;
-
     }
-
   }
   // this method for  fetch all contact form  addressBook
   _fetchData = () => {
@@ -211,9 +209,20 @@ class Test extends Component {
   scrollToTop = () => {
     this.scroller.scrollTo({ x: 0, y: 0, animated: true });
   };
-  onScrollEnd = (e) => {
+  onScrollEnd = e => {
     const layout = e.nativeEvent.contentOffset.y;
     this.props.changePosition(layout);
+  };
+
+   // FIXME: fix Group component on  scroll reached to top  of each  Group Component
+  handleScroll = nativeEvent => {
+    if (nativeEvent.contentOffset.y == this.props.scrolledTO) {
+      //console.log("yes > ");
+      this.backColor = "#ff7675";
+    } else {
+      //console.log('no <');
+      this.backColor = "#00d2d3";
+    }
   };
   renderContact = data => {
     return data.map((contact, index) => {
@@ -297,6 +306,7 @@ class Test extends Component {
       </View>
     );
   };
+
   render() {
     return (
       <SafeAreaView style={styles.MainContainer}>
@@ -304,7 +314,6 @@ class Test extends Component {
         <View style={styles.rightList}>
           {this.props.contacts.map((data, key) => {
             if (
-             // console.log( this.groupPos);
               this.groupRow[key] != null &&
               this.groupRow[key].y == this.props.scrolledTO
             ) {
@@ -324,9 +333,11 @@ class Test extends Component {
           })}
         </View>
         <ScrollView
-        showsVerticalScrollIndicator={false}
-        onMomentumScrollEnd={(e) =>  this.onScrollEnd(e)}
-        onScrollEndDrag={(e) => this.onScrollEnd(e) }
+          showsVerticalScrollIndicator={false}
+          onMomentumScrollEnd={e => this.onScrollEnd(e)}
+          onScrollEndDrag={e => this.onScrollEnd(e)}
+          onScroll={({ nativeEvent }) => this.handleScroll(nativeEvent)}
+          scrollEventThrottle={16}
           ref={ref => (this.scroller = ref)}
           style={{ width: width - 20 }}
           refreshControl={
@@ -339,17 +350,25 @@ class Test extends Component {
           <List containerStyle={styles.list}>
             {this.props.contacts.map((data, key) => {
               if (
-              this.groupRow[key] != null &&
-              this.groupRow[key].y == this.props.scrolledTO
-            ) {
-              this.backColor = "#ffeaa7";
-              this.pos = 'absolute';
-            } else {
-              this.backColor = "#fff";
-              this.pos = 'relative';
-            }
+                this.groupRow[key] != null &&
+                this.groupRow[key].y == this.props.scrolledTO
+              ) {
+                // this.backColor = "#ffeaa7";
+                this.pos = "absolute";
+              } else {
+                // this.backColor = "#fff";
+                this.pos = "relative";
+              }
               return [
-                <Group key={key} name={data.group}/>,
+                <Group
+                  key={key}
+                  name={data.group}
+                  style={{
+                    position: "relative",
+                    top: 10,
+                    backgroundColor: this.backColor
+                  }}
+                />,
                 this.renderContact(data.children)
               ];
             })}
@@ -426,7 +445,7 @@ const mapStateToProps = state => {
     query: state.contacts.query,
     loading: state.contacts.loading,
     scrolledTO: state.contacts.scrolledTO,
-    groupPos: state.contacts.groupPos,
+    groupPos: state.contacts.groupPos
   };
 };
 
