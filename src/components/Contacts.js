@@ -10,7 +10,8 @@ import {
   RefreshControl,
   Text,
   ScrollView,
-  Dimensions
+  Dimensions,
+  AsyncStorage
 } from "react-native";
 import Contacts from "react-native-contacts";
 import { connect } from "react-redux";
@@ -30,15 +31,21 @@ import Swipeable from "react-native-swipeable";
 import Group from "./Group";
 import RNImmediatePhoneCall from "react-native-immediate-phone-call";
 const { width, height } = Dimensions.get("window");
+import Colors from "./common/Colors";
 
 class ContactsComponent extends Component {
   constructor(props) {
     super(props);
     this.color = "";
     this.groupRow = [];
+    this.GroupColor = Colors.text;
+    this.state = {
+      displayPhoto: true
+    };
   }
 
   componentWillMount() {
+    this.updateViewStyle();
     /**
      *  check if paltform is android
      * then request android required permissions
@@ -63,13 +70,19 @@ class ContactsComponent extends Component {
    * then  return true for update component
    * if not equal return false
    */
-  shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.contacts !== nextProps.contacts) {
+  /* shouldComponentUpdate(nextProps, nextState) {
+    /*if (this.props.contacts !== nextProps.contacts) {
+      return true;
+    }*/
+  /*  if(this.state.displayPhoto !== nextState.displayPhoto){
+      console.log("yes not equal state");
       return true;
     }
 
-    return false;
+   // return false;
   }
+  */
+
   componentWillReceiveProps(nextProps) {
     /*
      * check if count list not  equal this.props.countList
@@ -91,6 +104,13 @@ class ContactsComponent extends Component {
         refresh: false
       });
     }
+    /**
+     *  if  navigation state has param check
+     *  then update View Style
+     */
+    if (nextProps.navigation.state.params.check) {
+      this.updateViewStyle();
+    }
     /*
      * check if groupPos not  equal this.props.groupPos
      * then  update  groupRow Array
@@ -99,6 +119,15 @@ class ContactsComponent extends Component {
       this.groupRow = nextProps.groupPos;
     }
   }
+  updateViewStyle = () => {
+    AsyncStorage.getItem("displayPhoto").then(value => {
+      if (value == "yes") {
+        this.setState({ displayPhoto: true });
+      } else if (value == "no") {
+        this.setState({ displayPhoto: false });
+      }
+    });
+  };
   // this method for  fetch all contact form  addressBook
   _fetchData = () => {
     /**
@@ -143,14 +172,19 @@ class ContactsComponent extends Component {
 
   // this method for render separator between ListItem
   renderSeparator = key => {
+    if (this.state.displayPhoto) {
+      this.marginLeft = "14%";
+    } else {
+      this.marginLeft = "6%";
+    }
     return (
       <View
         key={key}
         style={{
-          height: 1,
+          height: 0.5,
           width: "86%",
           backgroundColor: "#CED0CE",
-          marginLeft: "14%"
+          marginLeft: this.marginLeft
         }}
       />
     );
@@ -214,14 +248,46 @@ class ContactsComponent extends Component {
     this.props.changePosition(layout);
   };
 
-   // FIXME: fix Group component on  scroll reached to top  of each  Group Component
+  // FIXME: fix Group component on  scroll reached to top  of each  Group Component
   handleScroll = nativeEvent => {
     if (nativeEvent.contentOffset.y == this.props.scrolledTO) {
       //console.log("yes > ");
-   //   this.backColor = "#ff7675";
+      //   this.backColor = "#ff7675";
     } else {
       //console.log('no <');
-     // this.backColor = "#00d2d3";
+      // this.backColor = "#00d2d3";
+    }
+  };
+  renderInfo = (contact, FullName, phone, givenName, background) => {
+    if (this.state.displayPhoto) {
+      this.GroupColor = Colors.text;
+      return (
+        <ListItem
+          onPress={this.onContactSelected.bind(this, contact)}
+          roundAvatar
+          title={FullName}
+          subtitle={phone}
+          avatar={
+            <Avatar
+              size="small"
+              rounded
+              overlayContainerStyle={{ backgroundColor: background }}
+              title={avatarLetter(givenName)}
+              activeOpacity={0.7}
+            />
+          }
+          containerStyle={{ borderBottomWidth: 0 }}
+        />
+      );
+    } else {
+      this.GroupColor = Colors.Group;
+      return (
+        <ListItem
+          onPress={this.onContactSelected.bind(this, contact)}
+          title={FullName}
+          containerStyle={{ borderBottomWidth: 0 }}
+        />
+      );
     }
   };
   renderContact = data => {
@@ -251,7 +317,7 @@ class ContactsComponent extends Component {
             name={"textsms"}
             size={30}
             underlayColor={"rgba(255,255,255,0)"}
-            color={"#00d2d3"}
+            color={Colors.Group}
           />
         </View>
       );
@@ -266,22 +332,7 @@ class ContactsComponent extends Component {
           onLeftActionRelease={this.callContact.bind(this, phone)}
           onRightActionRelease={this.textContact.bind(this, phone)}
         >
-          <ListItem
-            onPress={this.onContactSelected.bind(this, contact)}
-            roundAvatar
-            title={FullName}
-            subtitle={phone}
-            avatar={
-              <Avatar
-                size="small"
-                rounded
-                overlayContainerStyle={{ backgroundColor: background }}
-                title={avatarLetter(givenName)}
-                activeOpacity={0.7}
-              />
-            }
-            containerStyle={{ borderBottomWidth: 0 }}
-          />
+          {this.renderInfo(contact, FullName, phone, givenName, background)}
         </Swipeable>,
         this.renderSeparator(`sepa-${index}`)
       ];
@@ -300,7 +351,7 @@ class ContactsComponent extends Component {
       >
         <ActivityIndicator
           style={{ flex: 1, alignSelf: "center" }}
-          color="#0984e3"
+          color={Colors.header}
           size="large"
         />
       </View>
@@ -317,9 +368,9 @@ class ContactsComponent extends Component {
               this.groupRow[key] != null &&
               this.groupRow[key].y == this.props.scrolledTO
             ) {
-              this.color = "#ff7675";
+              this.color = Colors.GroupActive;
             } else {
-              this.color = "#00d2d3";
+              this.color = Colors.Group;
             }
             return (
               <Text
@@ -337,7 +388,7 @@ class ContactsComponent extends Component {
           onMomentumScrollEnd={e => this.onScrollEnd(e)}
           onScrollEndDrag={e => this.onScrollEnd(e)}
           onScroll={({ nativeEvent }) => this.handleScroll(nativeEvent)}
-         // scrollEventThrottle={16}
+          // scrollEventThrottle={16}
           ref={ref => (this.scroller = ref)}
           style={{ width: width - 20 }}
           refreshControl={
@@ -362,6 +413,7 @@ class ContactsComponent extends Component {
               return [
                 <Group
                   key={key}
+                  titleStyle={{ color: this.GroupColor }}
                   name={data.group}
                   style={{
                     position: "relative",
@@ -420,8 +472,8 @@ const styles = StyleSheet.create({
   },
   rightList: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: "transparent",
     width: 20,
     height: height,
