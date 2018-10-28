@@ -51,7 +51,7 @@ class Options extends Component {
       AsyncStorage.setItem("sortValue", "no");
     }
   };
- /**
+  /**
    * handlePhotos
    *  check value of switch  and  update displayPhoto storage and state
    * @Param  {Boolean} value  (value of Display photos and info)
@@ -64,7 +64,7 @@ class Options extends Component {
       AsyncStorage.setItem("displayPhoto", "no");
     }
   };
- /**
+  /**
    * handleViewAsFamilyName
    *  check value of switch  and  update viewAsFamilyName storage and state
    * @Param  {Boolean} value  (value of view contact as Family name first )
@@ -82,7 +82,6 @@ class Options extends Component {
       <View style={styles.mainConatinerStyle}>
         <List containerStyle={styles.list}>
           <ListItem
-            onPress={() => console.log("cliked")}
             switchButton
             hideChevron
             trackColor={"#00BCD4"}
@@ -107,7 +106,6 @@ class Options extends Component {
             containerStyle={{ borderBottomWidth: 0 }}
           />
           <ListItem
-            onPress={() => console.log("cliked")}
             switchButton
             hideChevron
             trackColor={"#00BCD4"}
@@ -142,4 +140,7 @@ const mapStateToProp = state => {
     contacts: state.contacts.data
   };
 };
-export default connect(mapStateToProp,action)(Options);
+export default connect(
+  mapStateToProp,
+  action
+)(Options);
