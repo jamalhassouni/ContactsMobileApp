@@ -3,12 +3,14 @@ import {
   PermissionsAndroid,
   Platform,
   View,
-  FlatList,
   Linking,
   StyleSheet,
   ActivityIndicator,
   SafeAreaView,
-  RefreshControl
+  RefreshControl,
+  Text,
+  ScrollView,
+  Dimensions
 } from "react-native";
 import Contacts from "react-native-contacts";
 import { connect } from "react-redux";
@@ -19,17 +21,23 @@ import {
   sumChars,
   uniqueList,
   avatarLetter,
-  _contains
+  _contains,
+  groupArrayByFirstChar
 } from "./common/Helper";
 import { FloatingMenu } from "./common";
 import { Icon, List, ListItem, SearchBar, Avatar } from "react-native-elements";
 import Swipeable from "react-native-swipeable";
+import Group from "./Group";
 import RNImmediatePhoneCall from "react-native-immediate-phone-call";
+const { width, height } = Dimensions.get("window");
 
-class ContactsComponents extends Component {
+class ContactsComponent extends Component {
   constructor(props) {
     super(props);
+    this.color = "";
+    this.groupRow = [];
   }
+
   componentWillMount() {
     /**
      *  check if paltform is android
@@ -72,6 +80,7 @@ class ContactsComponents extends Component {
         label: `${nextProps.countList} Contacts`
       });
     }
+
     /**
      * check if has params refresh
      * then  refresh data
@@ -81,6 +90,13 @@ class ContactsComponents extends Component {
       this.props.navigation.setParams({
         refresh: false
       });
+    }
+    /*
+     * check if groupPos not  equal this.props.groupPos
+     * then  update  groupRow Array
+     */
+    if (nextProps.groupPos !== this.props.groupPos) {
+      this.groupRow = nextProps.groupPos;
     }
   }
   // this method for  fetch all contact form  addressBook
@@ -126,9 +142,10 @@ class ContactsComponents extends Component {
   };
 
   // this method for render separator between ListItem
-  renderSeparator = () => {
+  renderSeparator = key => {
     return (
       <View
+        key={key}
         style={{
           height: 1,
           width: "86%",
@@ -167,6 +184,7 @@ class ContactsComponents extends Component {
   }
 
   // this method to  open default android messenger
+
   textContact(phone) {
     const url = `sms:${phone}`;
     this.lanuchUrl(url);
@@ -183,15 +201,37 @@ class ContactsComponents extends Component {
       }
     );
   }
+  scrollToRow(index) {
+    this.props.changePosition(index);
+    this.scroller.scrollTo({ x: 0, y: index, animated: true });
+  }
 
-  //this method for render each  Contact
-  renderContact = ({ item }) => {
-      const middleName = item.middleName || "";
-      const givenName = item.givenName || "";
-      const familyName = item.familyName || "";
+  scrollToTop = () => {
+    this.scroller.scrollTo({ x: 0, y: 0, animated: true });
+  };
+  onScrollEnd = e => {
+    const layout = e.nativeEvent.contentOffset.y;
+    this.props.changePosition(layout);
+  };
+
+   // FIXME: fix Group component on  scroll reached to top  of each  Group Component
+  handleScroll = nativeEvent => {
+    if (nativeEvent.contentOffset.y == this.props.scrolledTO) {
+      //console.log("yes > ");
+   //   this.backColor = "#ff7675";
+    } else {
+      //console.log('no <');
+     // this.backColor = "#00d2d3";
+    }
+  };
+  renderContact = data => {
+    return data.map((contact, index) => {
+      const middleName = contact.middleName || "";
+      const givenName = contact.givenName || "";
+      const familyName = contact.familyName || "";
       const FullName = givenName + " " + middleName + " " + familyName;
       //const avatar = item.thumbnailPath || "";
-      const phone = item.phoneNumbers[0].number;
+      const phone = contact.phoneNumbers[0].number;
       let i = sumChars(givenName) % defaultColors.length;
       let background = defaultColors[i];
       const leftContent = (
@@ -216,8 +256,9 @@ class ContactsComponents extends Component {
         </View>
       );
 
-      return (
+      return [
         <Swipeable
+          key={index}
           leftActionActivationDistance={100}
           leftContent={leftContent}
           rightActionActivationDistance={100}
@@ -226,7 +267,7 @@ class ContactsComponents extends Component {
           onRightActionRelease={this.textContact.bind(this, phone)}
         >
           <ListItem
-            onPress={this.onContactSelected.bind(this, item)}
+            onPress={this.onContactSelected.bind(this, contact)}
             roundAvatar
             title={FullName}
             subtitle={phone}
@@ -241,10 +282,11 @@ class ContactsComponents extends Component {
             }
             containerStyle={{ borderBottomWidth: 0 }}
           />
-        </Swipeable>
-      );
+        </Swipeable>,
+        this.renderSeparator(`sepa-${index}`)
+      ];
+    });
   };
-
   // this method for render footer
   renderFooter = () => {
     if (!this.props.loading) return null;
@@ -264,28 +306,74 @@ class ContactsComponents extends Component {
       </View>
     );
   };
+
   render() {
     return (
       <SafeAreaView style={styles.MainContainer}>
         {this.renderHeader()}
-        <List containerStyle={styles.list}>
-          <FlatList
-            data={this.props.contacts}
-            ref={ref => {
-              this.flatListRef = ref;
-            }}
-            initialNumToRender={10}
-            renderItem={this.renderContact}
-            keyExtractor={(item, index) => index.toString()}
-            refreshControl={
-              <RefreshControl
-                refreshing={this.props.refreshing}
-                onRefresh={this._onRefresh}
-              />
+        <View style={styles.rightList}>
+          {this.props.contacts.map((data, key) => {
+            if (
+              this.groupRow[key] != null &&
+              this.groupRow[key].y == this.props.scrolledTO
+            ) {
+              this.color = "#ff7675";
+            } else {
+              this.color = "#00d2d3";
             }
-            ItemSeparatorComponent={this.renderSeparator}
-          />
-        </List>
+            return (
+              <Text
+                key={key}
+                onPress={() => this.scrollToRow(this.groupRow[key].y)}
+                style={[styles.rightText, { color: this.color }]}
+              >
+                {data.group}
+              </Text>
+            );
+          })}
+        </View>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          onMomentumScrollEnd={e => this.onScrollEnd(e)}
+          onScrollEndDrag={e => this.onScrollEnd(e)}
+          onScroll={({ nativeEvent }) => this.handleScroll(nativeEvent)}
+         // scrollEventThrottle={16}
+          ref={ref => (this.scroller = ref)}
+          style={{ width: width - 20 }}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.props.refreshing}
+              onRefresh={this._onRefresh}
+            />
+          }
+        >
+          <List containerStyle={styles.list}>
+            {this.props.contacts.map((data, key) => {
+              if (
+                this.groupRow[key] != null &&
+                this.groupRow[key].y == this.props.scrolledTO
+              ) {
+                // this.backColor = "#ffeaa7";
+                this.pos = "absolute";
+              } else {
+                // this.backColor = "#fff";
+                this.pos = "relative";
+              }
+              return [
+                <Group
+                  key={key}
+                  name={data.group}
+                  style={{
+                    position: "relative",
+                    top: 10,
+                    backgroundColor: this.backColor
+                  }}
+                />,
+                this.renderContact(data.children)
+              ];
+            })}
+          </List>
+        </ScrollView>
         {this.renderFooter()}
         <FloatingMenu
           icon="user-plus"
@@ -299,9 +387,11 @@ class ContactsComponents extends Component {
 
 const styles = StyleSheet.create({
   MainContainer: {
-    flex: 1
+    flex: 1,
+    backgroundColor: "#fff"
   },
   list: {
+    flex: 1,
     borderTopWidth: 0,
     borderBottomWidth: 0,
     marginTop: 0
@@ -327,20 +417,41 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     paddingLeft: 20
+  },
+  rightList: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: "transparent",
+    width: 20,
+    height: height,
+    position: "absolute",
+    top: 0,
+    right: 0,
+    zIndex: 1
+  },
+  rightText: {
+    textAlign: "center",
+    fontSize: 10,
+    marginTop: 4.5,
+    paddingHorizontal: 4,
+    fontWeight: "bold"
   }
 });
 const mapStateToProps = state => {
   return {
-    contacts: state.contacts.data,
+    contacts: groupArrayByFirstChar(state.contacts.data),
     fullData: state.contacts.fullData,
     countList: state.contacts.count,
     refreshing: state.contacts.refreshing,
     query: state.contacts.query,
-    loading: state.contacts.loading
+    loading: state.contacts.loading,
+    scrolledTO: state.contacts.scrolledTO,
+    groupPos: state.contacts.groupPos
   };
 };
 
 export default connect(
   mapStateToProps,
   action
-)(ContactsComponents);
+)(ContactsComponent);

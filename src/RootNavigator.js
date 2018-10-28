@@ -1,12 +1,11 @@
 import React from "react";
 import { Platform, StyleSheet } from "react-native";
 import { createStackNavigator } from "react-navigation";
-import ContactsComponents from "./components/Contacts";
+import ContactsComponent from "./components/Contacts";
 import Details from "./components/Details";
 import Options from "./components/Options";
 import AddContact from "./components/AddContact";
 import EditContact from "./components/EditContact";
-import Test from "./components/Test";
 import { Header } from "react-native-elements";
 import Colors from "./components/common/Colors";
 
@@ -56,7 +55,7 @@ const transitionConfig = () => {
 const Routes = createStackNavigator(
   {
     contacts: {
-      screen: Test,
+      screen: ContactsComponent,
       navigationOptions: ({ navigation }) => ({
         header: (
           <Header
