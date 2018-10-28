@@ -40,7 +40,8 @@ class ContactsComponent extends Component {
     this.groupRow = [];
     this.GroupColor = Colors.text;
     this.state = {
-      displayPhoto: true
+      displayPhoto: true,
+      sortValue: false
     };
   }
 
@@ -127,6 +128,15 @@ class ContactsComponent extends Component {
         this.setState({ displayPhoto: false });
       }
     });
+    AsyncStorage.getItem("sortValue").then(value => {
+      if (value == "yes") {
+        this.props.ChangeSortBy("familyName");
+        this.setState({ sortValue: true });
+      } else if (value == "no") {
+        this.props.ChangeSortBy("givenName");
+        this.setState({ sortValue: false });
+      }
+    });
   };
   // this method for  fetch all contact form  addressBook
   _fetchData = () => {
@@ -139,7 +149,7 @@ class ContactsComponent extends Component {
       granted => {
         if (granted) {
           Contacts.getAll((err, contacts) => {
-            this.props.fetchContact(uniqueList(contacts));
+            this.props.fetchContact(uniqueList(contacts, this.props.sortBy));
           });
         }
       }
@@ -346,7 +356,7 @@ class ContactsComponent extends Component {
         style={{
           flex: 1,
           justifyContent: "center",
-          alignItems: "center",
+          alignItems: "center"
         }}
       >
         <ActivityIndicator
@@ -492,14 +502,15 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = state => {
   return {
-    contacts: groupArrayByFirstChar(state.contacts.data),
+    contacts: groupArrayByFirstChar(state.contacts.data, state.contacts.sortBy),
     fullData: state.contacts.fullData,
     countList: state.contacts.count,
     refreshing: state.contacts.refreshing,
     query: state.contacts.query,
     loading: state.contacts.loading,
     scrolledTO: state.contacts.scrolledTO,
-    groupPos: state.contacts.groupPos
+    groupPos: state.contacts.groupPos,
+    sortBy: state.contacts.sortBy
   };
 };
 
