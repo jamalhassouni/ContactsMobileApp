@@ -338,15 +338,15 @@ class ContactsComponent extends Component {
       ];
     });
   };
-  // this method for render footer
-  renderFooter = () => {
+  // this method for render Indicator
+  renderIndicator = () => {
     if (!this.props.loading) return null;
     return (
       <View
         style={{
           flex: 1,
           justifyContent: "center",
-          alignItems: "center"
+          alignItems: "center",
         }}
       >
         <ActivityIndicator
@@ -362,6 +362,7 @@ class ContactsComponent extends Component {
     return (
       <SafeAreaView style={styles.MainContainer}>
         {this.renderHeader()}
+        {this.renderIndicator()}
         <View style={styles.rightList}>
           {this.props.contacts.map((data, key) => {
             if (
@@ -426,7 +427,6 @@ class ContactsComponent extends Component {
             })}
           </List>
         </ScrollView>
-        {this.renderFooter()}
         <FloatingMenu
           icon="user-plus"
           size={18}
