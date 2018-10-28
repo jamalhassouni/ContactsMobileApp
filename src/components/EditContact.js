@@ -763,7 +763,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: Colors.white,
     height: 30,
-    width: 62
+   // width: 62
   },
   groupBorder: {
     flex: 1,
