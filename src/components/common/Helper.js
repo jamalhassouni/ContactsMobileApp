@@ -53,17 +53,27 @@ export const sumChars = str => {
  * @description
  *  Grouping an array by the first letter in one of its elements
  * @param arg [Array]
+ * @Param  {string}  key [name of property]
  * @returns  Array
  * */
-export const groupArrayByFirstChar = (arg) => {
+export const groupArrayByFirstChar = (arg,key) => {
   let group;
   let data = arg.reduce((r, e) => {
    let pattern = /[\u0600-\u06FF-\#\d+]/;
-   if(pattern.test(e.givenName[0])){
-    group = '#';
+    if(e[key] != null && e[key][0] != undefined ){
+      if(pattern.test(e[key][0])){
+        group = '#';
+       }else{
+        group = e[key][0].toUpperCase();
+       }
    }else{
-    group = e.givenName[0].toUpperCase();
+    if(pattern.test(e['givenName'][0])){
+      group = '#';
+     }else{
+      group = e['givenName'][0].toUpperCase();
+     }
    }
+
     if(!r[group]) r[group] = {group, children: [e]}
     else r[group].children.push(e);
     return r;
@@ -80,9 +90,10 @@ export const groupArrayByFirstChar = (arg) => {
  * @description
  *  Filter an array based on the phone number and return a new array arranged by the first name
  * @param list [Array]
+ * @Param  {string}  key [name of property]
  * @returns  Array
  * */
-export const uniqueList = list => {
+export const uniqueList = (list,key) => {
   list = list.filter(
     (elm, index, self) =>
       index ===
@@ -97,7 +108,12 @@ export const uniqueList = list => {
       })
   );
   return list.sort((a, b) =>
-    a.givenName.toUpperCase().localeCompare(b.givenName.toUpperCase())
+   {
+    if(a[key] && b[key] != null){
+      a[key].toUpperCase().localeCompare(b[key].toUpperCase())
+
+     }
+   }
   );
 };
 
