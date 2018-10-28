@@ -30,6 +30,7 @@ class Group extends Component {
         >
           <ListItem
             hideChevron
+            titleStyle={this.props.titleStyle}
             title={this.props.name}
             containerStyle={{ borderBottomWidth: 0 }}
           />
