@@ -16,6 +16,12 @@ export const changePosition = (scrolledTO) => {
     payload: scrolledTO,
   };
 };
+export const ChangeSortBy = (sortBy) => {
+  return {
+    type: "ChangeSort",
+    payload: sortBy,
+  };
+};
 export const ChangeGroupPosition = (groupPos) => {
   return {
     type: "changeGroup",

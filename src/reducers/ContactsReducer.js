@@ -6,7 +6,8 @@ const INITIAL_STATE = {
   fullData: [],
   query: "",
   scrolledTO:0,
-  groupPos:[]
+  groupPos:[],
+  sortBy:'givenName',
 };
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -44,6 +45,11 @@ export default (state = INITIAL_STATE, action) => {
       return {
         ...state,
         groupPos:action.payload
+      };
+    case "ChangeSort":
+      return {
+        ...state,
+        sortBy:action.payload
       };
 
     default:
