@@ -41,7 +41,8 @@ class ContactsComponent extends Component {
     this.GroupColor = Colors.text;
     this.state = {
       displayPhoto: true,
-      sortValue: false
+      sortValue: false,
+      viewAs:'givenName',
     };
   }
 
@@ -135,6 +136,13 @@ class ContactsComponent extends Component {
       } else if (value == "no") {
         this.props.ChangeSortBy("givenName");
         this.setState({ sortValue: false });
+      }
+    });
+    AsyncStorage.getItem("viewAsFamilyName").then(value => {
+      if (value == "yes") {
+       this.setState({viewAs:'familyName'}) ;
+      } else if(value == "no") {
+        this.setState({viewAs:'givenName'}) ;
       }
     });
   };
@@ -300,12 +308,18 @@ class ContactsComponent extends Component {
       );
     }
   };
-  renderContact = data => {
+  renderContact = (data,viewAs) => {
     return data.map((contact, index) => {
       const middleName = contact.middleName || "";
       const givenName = contact.givenName || "";
       const familyName = contact.familyName || "";
-      const FullName = givenName + " " + middleName + " " + familyName;
+      let FullName;
+      if(viewAs == "familyName"){
+         FullName = familyName + " " + middleName + " " + givenName;
+      }else{
+         FullName = givenName + " " + middleName + " " + familyName;
+      }
+
       //const avatar = item.thumbnailPath || "";
       const phone = contact.phoneNumbers[0].number;
       let i = sumChars(givenName) % defaultColors.length;
@@ -432,7 +446,7 @@ class ContactsComponent extends Component {
                     backgroundColor: this.backColor
                   }}
                 />,
-                this.renderContact(data.children)
+                this.renderContact(data.children,this.state.viewAs)
               ];
             })}
           </List>
