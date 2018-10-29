@@ -18,21 +18,21 @@ class Options extends Component {
     AsyncStorage.getItem("sortValue").then(value => {
       if (value == "yes") {
         this.setState({ sortValue: true });
-      } else {
+      } else if(value =="no") {
         this.setState({ sortValue: false });
       }
     });
     AsyncStorage.getItem("displayPhoto").then(value => {
       if (value == "yes") {
         this.setState({ displayPhoto: true });
-      } else {
+      } else if(value =="no" ) {
         this.setState({ displayPhoto: false });
       }
     });
     AsyncStorage.getItem("viewAsFamilyName").then(value => {
       if (value == "yes") {
         this.setState({ viewAsFamilyName: true });
-      } else {
+      } else if(value =="no") {
         this.setState({ viewAsFamilyName: false });
       }
     });
