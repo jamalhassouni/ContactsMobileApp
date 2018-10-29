@@ -69,7 +69,7 @@ class Options extends Component {
    *  check value of switch  and  update viewAsFamilyName storage and state
    * @Param  {Boolean} value  (value of view contact as Family name first )
    */
-  handleViewAsFamilyName = () => {
+  handleViewAsFamilyName = value => {
     this.setState({ viewAsFamilyName: value });
     if (value) {
       AsyncStorage.setItem("viewAsFamilyName", "yes");
