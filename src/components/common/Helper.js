@@ -74,8 +74,8 @@ export const groupArrayByFirstChar = (arg,key) => {
      }
    }
 
-    if(!r[group]) r[group] = {group, children: [e]}
-    else r[group].children.push(e);
+    if(!r[group]) r[group] = {group, data: [e]}
+    else r[group].data.push(e);
     return r;
   }, {})
 
