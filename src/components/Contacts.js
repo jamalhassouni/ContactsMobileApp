@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import {
   PermissionsAndroid,
   Platform,
@@ -9,9 +9,9 @@ import {
   SafeAreaView,
   RefreshControl,
   Text,
-  ScrollView,
   Dimensions,
-  AsyncStorage
+  AsyncStorage,
+  SectionList
 } from "react-native";
 import Contacts from "react-native-contacts";
 import { connect } from "react-redux";
@@ -31,9 +31,11 @@ import Swipeable from "react-native-swipeable";
 import Group from "./Group";
 import RNImmediatePhoneCall from "react-native-immediate-phone-call";
 const { width, height } = Dimensions.get("window");
+const ITEM_HEIGHT = 56.33;
+
 import Colors from "./common/Colors";
 
-class ContactsComponent extends Component {
+class ContactsComponent extends PureComponent {
   constructor(props) {
     super(props);
     this.color = "";
@@ -42,7 +44,7 @@ class ContactsComponent extends Component {
     this.state = {
       displayPhoto: true,
       sortValue: false,
-      viewAs:'givenName',
+      viewAs: "givenName"
     };
   }
 
@@ -66,24 +68,6 @@ class ContactsComponent extends Component {
     });
     this._fetchData();
   }
-
-  /**
-   * check if  nextProps not equal this.props.contacts
-   * then  return true for update component
-   * if not equal return false
-   */
-  /* shouldComponentUpdate(nextProps, nextState) {
-    /*if (this.props.contacts !== nextProps.contacts) {
-      return true;
-    }*/
-  /*  if(this.state.displayPhoto !== nextState.displayPhoto){
-      console.log("yes not equal state");
-      return true;
-    }
-
-   // return false;
-  }
-  */
 
   componentWillReceiveProps(nextProps) {
     /*
@@ -140,9 +124,9 @@ class ContactsComponent extends Component {
     });
     AsyncStorage.getItem("viewAsFamilyName").then(value => {
       if (value == "yes") {
-       this.setState({viewAs:'familyName'}) ;
-      } else if(value == "no") {
-        this.setState({viewAs:'givenName'}) ;
+        this.setState({ viewAs: "familyName" });
+      } else if (value == "no") {
+        this.setState({ viewAs: "givenName" });
       }
     });
   };
@@ -266,7 +250,7 @@ class ContactsComponent extends Component {
     this.props.changePosition(layout);
   };
 
-  // FIXME: fix Group component on  scroll reached to top  of each  Group Component
+
   handleScroll = nativeEvent => {
     if (nativeEvent.contentOffset.y == this.props.scrolledTO) {
       //console.log("yes > ");
@@ -308,64 +292,65 @@ class ContactsComponent extends Component {
       );
     }
   };
-  renderContact = (data,viewAs) => {
+  renderContact = (contact, index, viewAs) => {
     /**
      * TODO: render better than old  one
      * FIXME: fix infinty loop
      *
      */
-    return data.map((contact, index) => {
-      const middleName = contact.middleName || "";
-      const givenName = contact.givenName || "";
-      const familyName = contact.familyName || "";
-      let FullName;
-      if(viewAs == "familyName"){
-         FullName = middleName + " " + familyName + " " + givenName;
-      }else{
-         FullName = givenName + " " + middleName + " " + familyName;
-      }
+    const middleName = contact.middleName || "";
+    const givenName = contact.givenName || "";
+    const familyName = contact.familyName || "";
+    let FullName;
+    if (viewAs == "familyName") {
+      FullName = middleName + " " + familyName + " " + givenName;
+    } else {
+      FullName = givenName + " " + middleName + " " + familyName;
+    }
 
-      //const avatar = item.thumbnailPath || "";
-      const phone = contact.phoneNumbers[0].number;
-      let i = sumChars(givenName) % defaultColors.length;
-      let background = defaultColors[i];
-      const leftContent = (
-        <View style={styles.leftSwipeItem}>
-          <Icon
-            name={"phone"}
-            type="font-awesome"
-            size={30}
-            underlayColor={"rgba(255,255,255,0)"}
-            color={"#ee5253"}
-          />
-        </View>
-      );
-      const rightContent = (
-        <View style={styles.rightSwipeItem}>
-          <Icon
-            name={"textsms"}
-            size={30}
-            underlayColor={"rgba(255,255,255,0)"}
-            color={Colors.Group}
-          />
-        </View>
-      );
+    //const avatar = item.thumbnailPath || "";
+    const phone = contact.phoneNumbers[0].number;
+    let i = sumChars(givenName) % defaultColors.length;
+    let background = defaultColors[i];
+    const leftContent = (
+      <View style={styles.leftSwipeItem}>
+        <Icon
+          name={"phone"}
+          type="font-awesome"
+          size={30}
+          underlayColor={"rgba(255,255,255,0)"}
+          color={"#ee5253"}
+        />
+      </View>
+    );
+    const rightContent = (
+      <View style={styles.rightSwipeItem}>
+        <Icon
+          name={"textsms"}
+          size={30}
+          underlayColor={"rgba(255,255,255,0)"}
+          color={Colors.Group}
+        />
+      </View>
+    );
 
-      return [
-        <Swipeable
-          key={index}
-          leftActionActivationDistance={100}
-          leftContent={leftContent}
-          rightActionActivationDistance={100}
-          rightContent={rightContent}
-          onLeftActionRelease={this.callContact.bind(this, phone)}
-          onRightActionRelease={this.textContact.bind(this, phone)}
-        >
-          {this.renderInfo(contact, FullName, phone, givenName, background)}
-        </Swipeable>,
-        this.renderSeparator(`sepa-${index}`)
-      ];
-    });
+    return [
+      <Swipeable
+        onLayout={event => {
+          const layout = event.nativeEvent.layout;
+        }}
+        key={index}
+        leftActionActivationDistance={100}
+        leftContent={leftContent}
+        rightActionActivationDistance={100}
+        rightContent={rightContent}
+        onLeftActionRelease={this.callContact.bind(this, phone)}
+        onRightActionRelease={this.textContact.bind(this, phone)}
+      >
+        {this.renderInfo(contact, FullName, phone, givenName, background)}
+      </Swipeable>,
+      this.renderSeparator(`sepa-${index}`)
+    ];
   };
   // this method for render Indicator
   renderIndicator = () => {
@@ -386,6 +371,20 @@ class ContactsComponent extends Component {
       </View>
     );
   };
+  scrollToSection = () => {
+    console.log("scrolled click");
+    this.sectionListRef.scrollToLocation({
+      animated: true,
+      sectionIndex: 4,
+      itemIndex: 0,
+      viewPosition: 0
+    });
+  };
+  getItemLayout = (data, index) => ({
+    length: ITEM_HEIGHT,
+    offset: ITEM_HEIGHT * index,
+    index
+  });
 
   render() {
     return (
@@ -405,7 +404,8 @@ class ContactsComponent extends Component {
             return (
               <Text
                 key={key}
-                onPress={() => this.scrollToRow(this.groupRow[key].y)}
+                //onPress={() => this.scrollToRow(this.groupRow[key].y)}
+                onPress={() => this.scrollToSection()}
                 style={[styles.rightText, { color: this.color }]}
               >
                 {data.group}
@@ -413,49 +413,39 @@ class ContactsComponent extends Component {
             );
           })}
         </View>
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          onMomentumScrollEnd={e => this.onScrollEnd(e)}
-          onScrollEndDrag={e => this.onScrollEnd(e)}
-          onScroll={({ nativeEvent }) => this.handleScroll(nativeEvent)}
-          // scrollEventThrottle={16}
-          ref={ref => (this.scroller = ref)}
-          style={{ width: width - 20 }}
-          refreshControl={
-            <RefreshControl
-              refreshing={this.props.refreshing}
-              onRefresh={this._onRefresh}
-            />
-          }
-        >
-          <List containerStyle={styles.list}>
-            {this.props.contacts.map((data, key) => {
-              if (
-                this.groupRow[key] != null &&
-                this.groupRow[key].y == this.props.scrolledTO
-              ) {
-                // this.backColor = "#ffeaa7";
-                this.pos = "absolute";
-              } else {
-                // this.backColor = "#fff";
-                this.pos = "relative";
-              }
-              return [
-                <Group
-                  key={key}
-                  titleStyle={{ color: this.GroupColor }}
-                  name={data.group}
-                  style={{
-                    position: "relative",
-                    top: 10,
-                    backgroundColor: this.backColor
-                  }}
-                />,
-                this.renderContact(data.children,this.state.viewAs)
-              ];
-            })}
-          </List>
-        </ScrollView>
+        <List containerStyle={styles.list}>
+          <SectionList
+            showsVerticalScrollIndicator={false}
+            onMomentumScrollEnd={e => this.onScrollEnd(e)}
+            onScrollEndDrag={e => this.onScrollEnd(e)}
+            onScroll={({ nativeEvent }) => this.handleScroll(nativeEvent)}
+            style={{ width: width - 20 }}
+            refreshControl={
+              <RefreshControl
+                refreshing={this.props.refreshing}
+                onRefresh={this._onRefresh}
+              />
+            }
+            ref={ref => (this.scroller = ref)}
+            //  getItemLayout={this.getItemLayout}
+            renderItem={({ item, index, section }) =>
+              this.renderContact(item, index, this.state.viewAs)
+            }
+            renderSectionHeader={({ section: { group } }) => (
+              <Group
+                key={group}
+                titleStyle={{ color: this.GroupColor }}
+                name={group}
+                style={{
+                  backgroundColor: "#fff"
+                }}
+              />
+            )}
+            sections={this.props.contacts}
+            keyExtractor={(item, index) => item + index}
+            stickySectionHeadersEnabled={true}
+          />
+        </List>
         <FloatingMenu
           icon="user-plus"
           size={18}
