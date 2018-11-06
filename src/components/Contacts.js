@@ -309,13 +309,18 @@ class ContactsComponent extends Component {
     }
   };
   renderContact = (data,viewAs) => {
+    /**
+     * TODO: render better than old  one
+     * FIXME: fix infinty loop
+     *
+     */
     return data.map((contact, index) => {
       const middleName = contact.middleName || "";
       const givenName = contact.givenName || "";
       const familyName = contact.familyName || "";
       let FullName;
       if(viewAs == "familyName"){
-         FullName = familyName + " " + middleName + " " + givenName;
+         FullName = middleName + " " + familyName + " " + givenName;
       }else{
          FullName = givenName + " " + middleName + " " + familyName;
       }
