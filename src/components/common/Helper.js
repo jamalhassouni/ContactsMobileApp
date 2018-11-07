@@ -56,33 +56,53 @@ export const sumChars = str => {
  * @Param  {string}  key [name of property]
  * @returns  Array
  * */
-export const groupArrayByFirstChar = (arg,key) => {
+export const groupArrayByFirstChar = (arg, key) => {
   let group;
   let data = arg.reduce((r, e) => {
-   let pattern = /[\u0600-\u06FF-\#\d+]/;
-    if(e[key] != null && e[key][0] != undefined ){
-      if(pattern.test(e[key][0])){
-        group = '#';
-       }else{
+    let pattern = /[\u0600-\u06FF-\#\d+]/;
+    if (e[key] != null && e[key][0] != undefined) {
+      if (pattern.test(e[key][0])) {
+        group = "#";
+      } else {
         group = e[key][0].toUpperCase();
-       }
-   }else{
-    if(pattern.test(e['givenName'][0])){
-      group = '#';
-     }else{
-      group = e['givenName'][0].toUpperCase();
-     }
-   }
+      }
+    } else {
+      if (pattern.test(e["givenName"][0])) {
+        group = "#";
+      } else {
+        group = e["givenName"][0].toUpperCase();
+      }
+    }
 
-    if(!r[group]) r[group] = {group, data: [e]}
+    if (!r[group]) r[group] = { group, data: [e] };
     else r[group].data.push(e);
     return r;
-  }, {})
+  }, {});
 
   let result = Object.values(data);
 
-   return  result.sort(alphabetically(true));
+  return result.sort(alphabetically(true));
+};
 
+export const getSectionList = data => {
+  let newData = groupArrayByFirstChar(data);
+  // Data source of the packet header
+  let contactSection = [];
+  for (let i = 0; i < newData.length; i++) {
+    // Use the scroll bar on the right side
+    contactSection[i] = newData[i].group;
+  }
+  return contactSection;
+};
+
+export const getSectionListSize = data => {
+  let newData = groupArrayByFirstChar(data);
+  // The position of the packet header in the list
+  let contactSectionSize = [];
+  for (let i = 0; i < newData.length; i++) {
+    contactSectionSize[i] = newData[i].data.length;
+  }
+  return contactSectionSize;
 };
 
 /*
@@ -93,7 +113,7 @@ export const groupArrayByFirstChar = (arg,key) => {
  * @Param  {string}  key [name of property]
  * @returns  Array
  * */
-export const uniqueList = (list,key) => {
+export const uniqueList = (list, key) => {
   list = list.filter(
     (elm, index, self) =>
       index ===
@@ -107,14 +127,11 @@ export const uniqueList = (list,key) => {
         return false;
       })
   );
-  return list.sort((a, b) =>
-   {
-    if(a[key] && b[key] != null){
-      a[key].toUpperCase().localeCompare(b[key].toUpperCase())
-
-     }
-   }
-  );
+  return list.sort((a, b) => {
+    if (a[key] && b[key] != null) {
+      a[key].toUpperCase().localeCompare(b[key].toUpperCase());
+    }
+  });
 };
 
 /*
@@ -124,32 +141,26 @@ export const uniqueList = (list,key) => {
  * @param ascending [bool]
  * @returns  Int
  * */
-export const alphabetically = (ascending) => {
-
-  return (a,b) => {
-    if(a.group.toUpperCase() === null){
+export const alphabetically = ascending => {
+  return (a, b) => {
+    if (a.group.toUpperCase() === null) {
       return 1;
-    }
-    else if(b.group.toUpperCase() === null){
+    } else if (b.group.toUpperCase() === null) {
       return -1;
     }
-    if(a.group.toUpperCase() === '#'){
+    if (a.group.toUpperCase() === "#") {
       return 1;
-    }
-    else if(b.group.toUpperCase() === '#'){
+    } else if (b.group.toUpperCase() === "#") {
       return -1;
-    }
-    else if(a.group.toUpperCase() === b.group.toUpperCase()){
+    } else if (a.group.toUpperCase() === b.group.toUpperCase()) {
       return 0;
-    }
-    else if(ascending) {
+    } else if (ascending) {
       return a.group.toUpperCase() < b.group.toUpperCase() ? -1 : 1;
-    }
-    else if(!ascending) {
+    } else if (!ascending) {
       return a.group.toUpperCase() < b.group.toUpperCase() ? 1 : -1;
     }
   };
-}
+};
 
 /*
  * @name  uniqueNumber
@@ -158,16 +169,13 @@ export const alphabetically = (ascending) => {
  * @param numbers [Array]
  * @returns  Array
  * */
-export const uniqueNumber  = numbers =>{
-   numbers = numbers.filter(
+export const uniqueNumber = numbers => {
+  numbers = numbers.filter(
     (elm, index, self) =>
       index ===
       self.findIndex(t => {
         if (elm.number != null && t.number != null) {
-          return (
-            phoneNumberRegex(t.number) ===
-            phoneNumberRegex(elm.number)
-          );
+          return phoneNumberRegex(t.number) === phoneNumberRegex(elm.number);
         }
         return false;
       })
