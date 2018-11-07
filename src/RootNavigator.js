@@ -2,6 +2,7 @@ import React from "react";
 import { Platform, StyleSheet } from "react-native";
 import { createStackNavigator } from "react-navigation";
 import ContactsComponent from "./components/Contacts";
+import ContactList from "./components/ContactList";
 import Details from "./components/Details";
 import Options from "./components/Options";
 import AddContact from "./components/AddContact";
@@ -55,7 +56,7 @@ const transitionConfig = () => {
 const Routes = createStackNavigator(
   {
     contacts: {
-      screen: ContactsComponent,
+      screen: ContactList,
       navigationOptions: ({ navigation }) => ({
         header: (
           <Header
