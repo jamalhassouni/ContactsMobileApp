@@ -50,7 +50,9 @@ class ContactList extends PureComponent {
       displayPhoto: true,
       sortValue: false,
       viewAs: "givenName",
-      sectionList: this.props.sectionList
+      sectionList: this.props.sectionList,
+      isShow:false,
+      group:''
     };
   }
 
@@ -382,8 +384,8 @@ class ContactList extends PureComponent {
     this.scroller.scrollToLocation({
         animated: true,
         sectionIndex:index,
-        itemIndex:0,
-        viewPosition:0
+        itemIndex:-1,
+        viewPosition:0,
     });
 
   };
@@ -401,7 +403,6 @@ class ContactList extends PureComponent {
         return (
             <SafeAreaView style={styles.MainContainer}>
               {this.renderHeader()}
-              {this.renderIndicator()}
               <List containerStyle={styles.list}>
                 <SectionList
                   showsVerticalScrollIndicator={false}
@@ -439,6 +440,13 @@ class ContactList extends PureComponent {
                   sections={this.state.sectionList}
                   onSectionSelect={this._onSectionselect}
                 />
+                {/*this.state.isShow ? (
+          <View style={styles.modelView}>
+            <View style={styles.viewShow}>
+              <Text style={styles.textShow}>{ this.state.group}</Text>
+            </View>
+          </View>
+                ) : null*/}
               </List>
               <FloatingMenu
                 icon="user-plus"
@@ -448,7 +456,7 @@ class ContactList extends PureComponent {
             </SafeAreaView>
           );
        }else{
-        return <View/>;
+        return this.renderIndicator() ;
        }
   }
 }
@@ -505,7 +513,31 @@ const styles = StyleSheet.create({
     marginTop: 4.5,
     paddingHorizontal: 4,
     fontWeight: "bold"
-  }
+  },modelView: {
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
+    position: "absolute",
+    backgroundColor: "transparent",
+    right: 0,
+    top: 0,
+    bottom: 0,
+    left: 0,
+
+  },
+  viewShow: {
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#666",
+    width: 80,
+    height: 80,
+    borderRadius: 3
+  },
+
+  textShow: {
+    fontSize: 50,
+    color: "#fff"
+  },
 });
 const mapStateToProps = state => {
   return {
