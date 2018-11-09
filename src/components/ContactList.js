@@ -51,7 +51,7 @@ class ContactList extends PureComponent {
       viewAs: "givenName",
       sectionList: this.props.sectionList,
       isShow: false,
-      group: "A",
+      group: "A"
     };
   }
 
@@ -248,14 +248,7 @@ class ContactList extends PureComponent {
       }
     );
   }
-  scrollToRow(index) {
-    this.props.changePosition(index);
-    this.scroller.scrollTo({ x: 0, y: index, animated: true });
-  }
 
-  scrollToTop = () => {
-    this.scroller.scrollTo({ x: 0, y: 0, animated: true });
-  };
   onScrollEnd = e => {
     const layout = e.nativeEvent.contentOffset.y;
     this.props.changePosition(layout);
@@ -341,9 +334,6 @@ class ContactList extends PureComponent {
 
     return [
       <Swipeable
-        onLayout={event => {
-          const layout = event.nativeEvent.layout;
-        }}
         key={index}
         leftActionActivationDistance={100}
         leftContent={leftContent}
@@ -430,12 +420,12 @@ class ContactList extends PureComponent {
           {this.renderHeader()}
           <List containerStyle={styles.list}>
             <SectionList
-             // onViewableItemsChanged={this._onViewableItemsChanged}
+              // onViewableItemsChanged={this._onViewableItemsChanged}
               showsVerticalScrollIndicator={false}
               onMomentumScrollEnd={e => this.onScrollEnd(e)}
               onScrollEndDrag={e => this.onScrollEnd(e)}
               onScroll={({ nativeEvent }) => this.handleScroll(nativeEvent)}
-             /* viewabilityConfig={{
+              /* viewabilityConfig={{
                 itemVisiblePercentThreshold: 50 //means if 50% of the item is visible
               }}*/
               style={{ width: width - 20 }}
