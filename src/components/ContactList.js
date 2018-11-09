@@ -51,8 +51,8 @@ class ContactList extends PureComponent {
       sortValue: false,
       viewAs: "givenName",
       sectionList: this.props.sectionList,
-      isShow:false,
-      group:''
+      isShow: false,
+      group: "A",
     };
   }
 
@@ -88,7 +88,7 @@ class ContactList extends PureComponent {
       });
     }
     if (nextProps.sectionList !== this.props.sectionList) {
-      this.setState({sectionList:nextProps.sectionList})
+      this.setState({ sectionList: nextProps.sectionList });
     }
 
     /**
@@ -379,15 +379,14 @@ class ContactList extends PureComponent {
   };
   // This side returns data such as A, 0
   _onSectionselect = (chapter, index) => {
-      console.log("on select ",index,chapter);
+    console.log("on select ", index, chapter);
     // Jump to an item
     this.scroller.scrollToLocation({
-        animated: true,
-        sectionIndex:index,
-        itemIndex:-1,
-        viewPosition:0,
+      animated: true,
+      sectionIndex: index,
+      itemIndex: -1,
+      viewPosition: 0
     });
-
   };
   _getItemLayout(data, index) {
     let [length, separator, header] = [
@@ -395,69 +394,94 @@ class ContactList extends PureComponent {
       SEPARATOR_HEIGHT,
       HEADER_HEIGHT
     ];
-    return {length, offset: (length + separator) * index + header, index};
+    return { length, offset: (length + separator) * index + header, index };
   }
-
+  /*_onViewableItemsChanged = (
+    info = {
+      viewableItems: {
+        key,
+        isViewable,
+        item: { columns },
+        index,
+        section
+      },
+      changed: {
+        key,
+        isViewable,
+        item: { columns },
+        index,
+        section
+      }
+    }
+  ) => {
+    let me = this;
+    if (!this.state.isClick && this.state.group !== info.viewableItems[0].section.group) {
+      me.setState({ isShow: true,isClick:false, group: info.viewableItems[0].section.group });
+      setTimeout(() => {
+        this.setState({ isShow: false });
+      }, 3000);
+    } else {
+      this.setState({ isShow: false });
+    }
+  };*/
   render() {
-       if(this.props.contacts.length >0){
-        return (
-            <SafeAreaView style={styles.MainContainer}>
-              {this.renderHeader()}
-              <List containerStyle={styles.list}>
-                <SectionList
-                  showsVerticalScrollIndicator={false}
-                  onMomentumScrollEnd={e => this.onScrollEnd(e)}
-                  onScrollEndDrag={e => this.onScrollEnd(e)}
-                  onScroll={({ nativeEvent }) => this.handleScroll(nativeEvent)}
-                  style={{ width: width - 20 }}
-                  refreshControl={
-                    <RefreshControl
-                      refreshing={this.props.refreshing}
-                      onRefresh={this._onRefresh}
-                    />
-                  }
-                //  getItemLayout={this._getItemLayout}
-                  ref={(ref) => { this.scroller = ref; }}
-                 getItemLayout={this.getItemLayout}
-                  renderItem={({ item, index, section }) =>
-                    this.renderContact(item, index, this.state.viewAs)
-                  }
-                  renderSectionHeader={({ section: { group } }) => (
-                    <Group
-                      key={group}
-                      titleStyle={{ color: this.GroupColor }}
-                      name={group}
-                      style={{
-                        backgroundColor: "#fff"
-                      }}
-                    />
-                  )}
-                  sections={this.props.contacts}
-                  keyExtractor={(item, index) => item + index}
-                  stickySectionHeadersEnabled={true}
+    if (this.props.contacts.length > 0) {
+      return (
+        <SafeAreaView style={styles.MainContainer}>
+          {this.renderHeader()}
+          <List containerStyle={styles.list}>
+            <SectionList
+             // onViewableItemsChanged={this._onViewableItemsChanged}
+              showsVerticalScrollIndicator={false}
+              onMomentumScrollEnd={e => this.onScrollEnd(e)}
+              onScrollEndDrag={e => this.onScrollEnd(e)}
+              onScroll={({ nativeEvent }) => this.handleScroll(nativeEvent)}
+             /* viewabilityConfig={{
+                itemVisiblePercentThreshold: 50 //means if 50% of the item is visible
+              }}*/
+              style={{ width: width - 20 }}
+              refreshControl={
+                <RefreshControl
+                  refreshing={this.props.refreshing}
+                  onRefresh={this._onRefresh}
                 />
-                <GroupSectionList
-                  sections={this.state.sectionList}
-                  onSectionSelect={this._onSectionselect}
+              }
+              ref={ref => {
+                this.scroller = ref;
+              }}
+              getItemLayout={this.getItemLayout}
+              renderItem={({ item, index, section }) =>
+                this.renderContact(item, index, this.state.viewAs)
+              }
+              renderSectionHeader={({ section: { group } }) => (
+                <Group
+                  key={group}
+                  titleStyle={{ color: this.GroupColor }}
+                  name={group}
+                  style={{
+                    backgroundColor: "#fff"
+                  }}
                 />
-                {/*this.state.isShow ? (
-          <View style={styles.modelView}>
-            <View style={styles.viewShow}>
-              <Text style={styles.textShow}>{ this.state.group}</Text>
-            </View>
-          </View>
-                ) : null*/}
-              </List>
-              <FloatingMenu
-                icon="user-plus"
-                size={18}
-                onPress={this.onClickAddContact}
-              />
-            </SafeAreaView>
-          );
-       }else{
-        return this.renderIndicator() ;
-       }
+              )}
+              sections={this.props.contacts}
+              keyExtractor={(item, index) => item + index}
+              stickySectionHeadersEnabled={true}
+            />
+            <GroupSectionList
+              sections={this.state.sectionList}
+              onSectionSelect={this._onSectionselect}
+            />
+          </List>
+          <FloatingMenu
+            icon="user-plus"
+            size={18}
+            onPress={this.onClickAddContact}
+          />
+        </SafeAreaView>
+      );
+    } else {
+      return this.renderIndicator();
+    }
   }
 }
 
@@ -485,45 +509,25 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     justifyContent: "center",
     paddingRight: 20,
-    backgroundColor: "#fff",
+    backgroundColor: "#fff"
   },
   rightSwipeItem: {
     alignItems: "flex-start",
     backgroundColor: "#fff",
     flex: 1,
     justifyContent: "center",
-    paddingLeft: 20,
-
+    paddingLeft: 20
   },
-  rightList: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "transparent",
-    width: 20,
-    height: height,
-    position: "absolute",
-    top: 0,
-    right: 0,
-    zIndex: 1
-  },
-  rightText: {
-    textAlign: "center",
-    fontSize: 10,
-    marginTop: 4.5,
-    paddingHorizontal: 4,
-    fontWeight: "bold"
-  },modelView: {
+  modelView: {
     justifyContent: "center",
     alignItems: "center",
     flex: 1,
     position: "absolute",
-    backgroundColor: "transparent",
-    right: 0,
-    top: 0,
-    bottom: 0,
-    left: 0,
-
+    backgroundColor: "red",
+    right: width / 2 - 25,
+    top: height / 2,
+    bottom: height / 2,
+    left: width / 2 - 25
   },
   viewShow: {
     alignItems: "center",
@@ -537,7 +541,7 @@ const styles = StyleSheet.create({
   textShow: {
     fontSize: 50,
     color: "#fff"
-  },
+  }
 });
 const mapStateToProps = state => {
   return {
@@ -550,8 +554,8 @@ const mapStateToProps = state => {
     scrolledTO: state.contacts.scrolledTO,
     groupPos: state.contacts.groupPos,
     sortBy: state.contacts.sortBy,
-    sectionList:getSectionList(state.contacts.data),
-    sectionSize:getSectionListSize(state.contacts.data),
+    sectionList: getSectionList(state.contacts.data),
+    sectionSize: getSectionListSize(state.contacts.data)
   };
 };
 
