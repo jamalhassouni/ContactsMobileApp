@@ -8,7 +8,6 @@ import {
   ActivityIndicator,
   SafeAreaView,
   RefreshControl,
-  Text,
   Dimensions,
   AsyncStorage,
   SectionList
@@ -455,7 +454,7 @@ class ContactList extends PureComponent {
               }
               renderSectionHeader={({ section: { group } }) => (
                 <Group
-                  key={group}
+                  index={group}
                   titleStyle={{ color: this.GroupColor }}
                   name={group}
                   style={{
