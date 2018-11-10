@@ -28,7 +28,7 @@ import {
 } from "./common/Helper";
 import { FloatingMenu } from "./common";
 import { Icon, List, ListItem, SearchBar, Avatar } from "react-native-elements";
-import Swipeable from "react-native-swipeable";
+import Swipeable from "./Swipeable";
 import Group from "./Group";
 import RNImmediatePhoneCall from "react-native-immediate-phone-call";
 import GroupSectionList from "./GroupSectionList";
@@ -46,6 +46,7 @@ class ContactList extends PureComponent {
     this.groupRow = [];
     this.GroupColor = Colors.text;
     this.state = {
+      enable: true,
       displayPhoto: true,
       sortValue: false,
       viewAs: "givenName",
@@ -174,6 +175,12 @@ class ContactList extends PureComponent {
     this.props.navigation.navigate("AddContact");
   };
 
+  //enable or disable scroll on swipe
+  setScrollEnabled(enable) {
+    this.setState({
+      enable,
+    });
+  }
   // this method to handle search
   handleSearch = text => {
     const formattedQuery = text.trim().toLowerCase();
@@ -335,12 +342,12 @@ class ContactList extends PureComponent {
     return [
       <Swipeable
         key={index}
-        leftActionActivationDistance={100}
+        index={index}
         leftContent={leftContent}
-        rightActionActivationDistance={100}
         rightContent={rightContent}
         onLeftActionRelease={this.callContact.bind(this, phone)}
         onRightActionRelease={this.textContact.bind(this, phone)}
+        setScrollEnabled={enable => this.setScrollEnabled(enable)}
       >
         {this.renderInfo(contact, FullName, phone, givenName, background)}
       </Swipeable>,
