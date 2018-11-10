@@ -547,10 +547,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
   return {
     contacts: groupArrayByFirstChar(state.contacts.data, state.contacts.sortBy),
-    fullData: groupArrayByFirstChar(
-      state.contacts.fullData,
-      state.contacts.sortBy
-    ),
+    fullData:state.contacts.fullData,
     countList: state.contacts.count,
     refreshing: state.contacts.refreshing,
     query: state.contacts.query,
