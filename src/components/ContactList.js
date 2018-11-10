@@ -178,7 +178,7 @@ class ContactList extends PureComponent {
   //enable or disable scroll on swipe
   setScrollEnabled(enable) {
     this.setState({
-      enable,
+      enable
     });
   }
   // this method to handle search
@@ -420,64 +420,69 @@ class ContactList extends PureComponent {
       this.setState({ isShow: false });
     }
   };*/
-  render() {
+  renderContent() {
     if (this.props.contacts.length > 0) {
       return (
-        <SafeAreaView style={styles.MainContainer}>
-          {this.renderHeader()}
-          <List containerStyle={styles.list}>
-            <SectionList
-              // onViewableItemsChanged={this._onViewableItemsChanged}
-              showsVerticalScrollIndicator={false}
-              onMomentumScrollEnd={e => this.onScrollEnd(e)}
-              onScrollEndDrag={e => this.onScrollEnd(e)}
-              onScroll={({ nativeEvent }) => this.handleScroll(nativeEvent)}
-              /* viewabilityConfig={{
+        <List containerStyle={styles.list}>
+          <SectionList
+            // onViewableItemsChanged={this._onViewableItemsChanged}
+            showsVerticalScrollIndicator={false}
+            onMomentumScrollEnd={e => this.onScrollEnd(e)}
+            onScrollEndDrag={e => this.onScrollEnd(e)}
+            onScroll={({ nativeEvent }) => this.handleScroll(nativeEvent)}
+            /* viewabilityConfig={{
                 itemVisiblePercentThreshold: 50 //means if 50% of the item is visible
               }}*/
-              style={{ width: width - 20 }}
-              refreshControl={
-                <RefreshControl
-                  refreshing={this.props.refreshing}
-                  onRefresh={this._onRefresh}
-                />
-              }
-              ref={ref => {
-                this.scroller = ref;
-              }}
-              getItemLayout={this.getItemLayout}
-              renderItem={({ item, index, section }) =>
-                this.renderContact(item, index, this.state.viewAs)
-              }
-              renderSectionHeader={({ section: { group } }) => (
-                <Group
-                  index={group}
-                  titleStyle={{ color: this.GroupColor }}
-                  name={group}
-                  style={{
-                    backgroundColor: "#fff"
-                  }}
-                />
-              )}
-              sections={this.props.contacts}
-              keyExtractor={(item, index) => item + index}
-              stickySectionHeadersEnabled={true}
-            />
-            <GroupSectionList
-              sections={this.state.sectionList}
-              onSectionSelect={this._onSectionselect}
-            />
-          </List>
-          <FloatingMenu
-            icon="user-plus"
-            size={18}
-            onPress={this.onClickAddContact}
+            style={{ width: width - 20 }}
+            refreshControl={
+              <RefreshControl
+                refreshing={this.props.refreshing}
+                onRefresh={this._onRefresh}
+              />
+            }
+            ref={ref => {
+              this.scroller = ref;
+            }}
+            getItemLayout={this.getItemLayout}
+            renderItem={({ item, index, section }) =>
+              this.renderContact(item, index, this.state.viewAs)
+            }
+            renderSectionHeader={({ section: { group } }) => (
+              <Group
+                index={group}
+                titleStyle={{ color: this.GroupColor }}
+                name={group}
+                style={{
+                  backgroundColor: "#fff"
+                }}
+              />
+            )}
+            sections={this.props.contacts}
+            keyExtractor={(item, index) => item + index}
+            stickySectionHeadersEnabled={true}
           />
-        </SafeAreaView>
+          <GroupSectionList
+            sections={this.state.sectionList}
+            onSectionSelect={this._onSectionselect}
+          />
+        </List>
       );
     } else {
       return this.renderIndicator();
     }
+  }
+  render() {
+    return (
+      <SafeAreaView style={styles.MainContainer}>
+        {this.renderHeader()}
+        {this.renderContent()}
+        <FloatingMenu
+          icon="user-plus"
+          size={18}
+          onPress={this.onClickAddContact}
+        />
+      </SafeAreaView>
+    );
   }
 }
 
@@ -542,7 +547,10 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
   return {
     contacts: groupArrayByFirstChar(state.contacts.data, state.contacts.sortBy),
-    fullData: state.contacts.fullData,
+    fullData: groupArrayByFirstChar(
+      state.contacts.fullData,
+      state.contacts.sortBy
+    ),
     countList: state.contacts.count,
     refreshing: state.contacts.refreshing,
     query: state.contacts.query,
