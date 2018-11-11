@@ -182,6 +182,7 @@ class Details extends Component {
             onPress={this.closeModalTop.bind(this)}
             rightIcon={
               <Icon
+                containerStyle={styles.iconContainer}
                 underlayColor={"rgba(255,255,255,0)"}
                 onPress={this.closeModalTop.bind(this)}
                 name="close"
@@ -257,6 +258,7 @@ class Details extends Component {
           >
             <View style={styles.headerLeft}>
               <Icon
+                containerStyle={styles.iconContainer}
                 style={styles.iconBack}
                 onPress={this.onBack}
                 name={"arrow-back"}
@@ -267,6 +269,7 @@ class Details extends Component {
             </View>
             <View style={styles.headerRight}>
               <Icon
+                containerStyle={styles.iconContainer}
                 style={styles.iconOptions}
                 onPress={this.openModalTop.bind(this)}
                 name={"more-vert"}
@@ -301,7 +304,7 @@ class Details extends Component {
                     height: 1,
                     width: "86%",
                     backgroundColor: "#CED0CE",
-                    marginLeft: "14%"
+                    marginLeft: "5%"
                   }}
                 />
               </View>
@@ -370,12 +373,16 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
     marginTop: 0
   },
+  iconContainer: {
+    width: 45,
+    height: 45
+  },
   headerLeft: {
     flex: 1,
     justifyContent: "space-between",
     flexDirection: "row",
     position: "absolute",
-    top: 10,
+    top: 0,
     left: 20,
     padding: 8,
     marginBottom: 10
@@ -390,7 +397,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     flexDirection: "row",
     position: "absolute",
-    top: 10,
+    top: 0,
     right: 20,
     padding: 8,
     marginBottom: 10
