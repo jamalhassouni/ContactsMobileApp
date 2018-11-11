@@ -195,6 +195,7 @@ class ContactList extends PureComponent {
   };
   // This side returns data such as A, 0
   _onSectionselect = (chapter, index) => {
+  // https://github.com/facebook/react-native/issues/13202#issuecomment-295134924
     let wait = new Promise(resolve => setTimeout(resolve, 500)); // Smaller number should work
     wait
       .then(() => {
