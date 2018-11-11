@@ -68,6 +68,7 @@ const Routes = createStackNavigator(
             }}
             rightComponent={{
               icon: "more-vert",
+              iconStyle: { width:44,height:44,position: 'relative',top:20 },
               color: Colors.white,
               underlayColor: "rgba(255,255,255,0)",
               onPress: () => {
@@ -105,7 +106,7 @@ const Routes = createStackNavigator(
             leftComponent={{
               icon: "arrow-back",
               size: 18,
-              iconStyle: { marginRight: 20, paddingRight: 10 },
+              iconStyle: { marginRight: 20, paddingRight: 10,width:44,height:44,position: 'relative',top:25 },
               color: Colors.white,
               underlayColor: "rgba(255,255,255,0)",
               onPress: () => {
