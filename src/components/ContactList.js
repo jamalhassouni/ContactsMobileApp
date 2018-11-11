@@ -67,9 +67,15 @@ class ContactList extends PureComponent {
         PermissionsAndroid.PERMISSIONS.READ_CONTACTS,
         PermissionsAndroid.PERMISSIONS.WRITE_CONTACTS,
         PermissionsAndroid.PERMISSIONS.CALL_PHONE
-      ]).catch(err => {
-        console.log("PermissionsAndroid", err);
-      });
+      ])
+        .then(obj => {
+          if (obj["android.permission.READ_CONTACTS"] == "granted") {
+            this._fetchData();
+          }
+        })
+        .catch(err => {
+          console.log("PermissionsAndroid", err);
+        });
     }
     this.props.navigation.setParams({
       label: `${this.props.countList} Contacts`
@@ -190,41 +196,6 @@ class ContactList extends PureComponent {
     this.props.SearchContacts(data, text);
   };
 
-  // this method for render separator between ListItem
-  renderSeparator = key => {
-    if (this.state.displayPhoto) {
-      this.marginLeft = "14%";
-    } else {
-      this.marginLeft = "6%";
-    }
-    return (
-      <View
-        key={key}
-        style={{
-          height: 0.5,
-          width: "86%",
-          backgroundColor: "#CED0CE",
-          marginLeft: this.marginLeft
-        }}
-      />
-    );
-  };
-
-  // this method for render header
-  renderHeader = () => {
-    return (
-      <SearchBar
-        containerStyle={styles.SearchBar}
-        inputStyle={{ height: 40 }}
-        clearIcon
-        onChangeText={this.handleSearch}
-        placeholder="Type Here..."
-        lightTheme
-        round
-      />
-    );
-  };
-
   // this method for check if openUrl supported or not
   lanuchUrl(url) {
     Linking.canOpenURL(url).then(supported => {
@@ -269,6 +240,58 @@ class ContactList extends PureComponent {
       //console.log('no <');
       // this.backColor = "#00d2d3";
     }
+  };
+  // This side returns data such as A, 0
+  _onSectionselect = (chapter, index) => {
+    // Jump to an item
+    this.scroller.scrollToLocation({
+      animated: true,
+      sectionIndex: index,
+      itemIndex: -1,
+      viewPosition: 0
+    });
+  };
+  _getItemLayout(data, index) {
+    let [length, separator, header] = [
+      ITEM_HEIGHT,
+      SEPARATOR_HEIGHT,
+      HEADER_HEIGHT
+    ];
+    return { length, offset: (length + separator) * index + header, index };
+  }
+  // this method for render separator between ListItem
+  renderSeparator = key => {
+    if (this.state.displayPhoto) {
+      this.marginLeft = "14%";
+    } else {
+      this.marginLeft = "6%";
+    }
+    return (
+      <View
+        key={key}
+        style={{
+          height: 0.5,
+          width: "86%",
+          backgroundColor: "#CED0CE",
+          marginLeft: this.marginLeft
+        }}
+      />
+    );
+  };
+
+  // this method for render header
+  renderHeader = () => {
+    return (
+      <SearchBar
+        containerStyle={styles.SearchBar}
+        inputStyle={{ height: 40 }}
+        clearIcon
+        onChangeText={this.handleSearch}
+        placeholder="Type Here..."
+        lightTheme
+        round
+      />
+    );
   };
   renderInfo = (contact, FullName, phone, givenName, background) => {
     if (this.state.displayPhoto) {
@@ -373,25 +396,7 @@ class ContactList extends PureComponent {
       </View>
     );
   };
-  // This side returns data such as A, 0
-  _onSectionselect = (chapter, index) => {
-    console.log("on select ", index, chapter);
-    // Jump to an item
-    this.scroller.scrollToLocation({
-      animated: true,
-      sectionIndex: index,
-      itemIndex: -1,
-      viewPosition: 0
-    });
-  };
-  _getItemLayout(data, index) {
-    let [length, separator, header] = [
-      ITEM_HEIGHT,
-      SEPARATOR_HEIGHT,
-      HEADER_HEIGHT
-    ];
-    return { length, offset: (length + separator) * index + header, index };
-  }
+
   /*_onViewableItemsChanged = (
     info = {
       viewableItems: {
@@ -427,6 +432,7 @@ class ContactList extends PureComponent {
           <SectionList
             // onViewableItemsChanged={this._onViewableItemsChanged}
             showsVerticalScrollIndicator={false}
+            initialNumToRender={10}
             onMomentumScrollEnd={e => this.onScrollEnd(e)}
             onScrollEndDrag={e => this.onScrollEnd(e)}
             onScroll={({ nativeEvent }) => this.handleScroll(nativeEvent)}
@@ -547,7 +553,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => {
   return {
     contacts: groupArrayByFirstChar(state.contacts.data, state.contacts.sortBy),
-    fullData:state.contacts.fullData,
+    fullData: state.contacts.fullData,
     countList: state.contacts.count,
     refreshing: state.contacts.refreshing,
     query: state.contacts.query,
