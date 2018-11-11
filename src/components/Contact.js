@@ -4,9 +4,7 @@ import {
   View,
   Linking,
   StyleSheet,
-  ActivityIndicator,
-  Dimensions,
-  AsyncStorage,
+  ActivityIndicator
 } from "react-native";
 import { connect } from "react-redux";
 import * as action from "../actions";
@@ -14,24 +12,19 @@ import {
   defaultColors,
   sumChars,
   avatarLetter,
-  _contains,
-  groupArrayByFirstChar,
-  getSectionList,
-  getSectionListSize
+  _contains
 } from "./common/Helper";
 import { Icon, ListItem, Avatar } from "react-native-elements";
 import Swipeable from "./Swipeable";
 import RNImmediatePhoneCall from "react-native-immediate-phone-call";
-const { width, height } = Dimensions.get("window");
-
 import Colors from "./common/Colors";
 
 class Contact extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-     enable: true,
-    }
+      enable: true
+    };
   }
 
   // this method to navigate to the details page with selected contact
@@ -46,7 +39,6 @@ class Contact extends PureComponent {
       enable
     });
   }
-
 
   // this method for check if openUrl supported or not
   lanuchUrl(url) {
@@ -79,7 +71,6 @@ class Contact extends PureComponent {
     );
   }
 
-
   // this method for render separator between ListItem
   renderSeparator = key => {
     if (this.props.displayPhoto) {
@@ -100,8 +91,7 @@ class Contact extends PureComponent {
     );
   };
 
-
-  renderInfo(contact, FullName, phone, givenName, background){
+  renderInfo(contact, FullName, phone, givenName, background) {
     if (this.props.displayPhoto) {
       this.GroupColor = Colors.text;
       return (
@@ -132,10 +122,7 @@ class Contact extends PureComponent {
         />
       );
     }
-  };
-  renderContact(contact, index, viewAs){
-
-  };
+  }
   // this method for render Indicator
   renderIndicator = () => {
     if (!this.props.loading) return null;
@@ -155,7 +142,6 @@ class Contact extends PureComponent {
       </View>
     );
   };
-
 
   render() {
     const contact = this.props.item;
@@ -231,13 +217,8 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = state => {
   return {
-    contacts: groupArrayByFirstChar(state.contacts.data, state.contacts.sortBy),
-    refreshing: state.contacts.refreshing,
-    query: state.contacts.query,
     loading: state.contacts.loading,
-    sortBy: state.contacts.sortBy,
-    sectionList: getSectionList(state.contacts.data),
-    sectionSize: getSectionListSize(state.contacts.data)
+    sortBy: state.contacts.sortBy
   };
 };
 
