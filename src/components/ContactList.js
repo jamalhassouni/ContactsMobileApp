@@ -195,13 +195,20 @@ class ContactList extends PureComponent {
   };
   // This side returns data such as A, 0
   _onSectionselect = (chapter, index) => {
-    // Jump to an item
-    this.scroller.scrollToLocation({
-      animated: true,
-      sectionIndex: index,
-      itemIndex: -1,
-      viewPosition: 0
-    });
+    let wait = new Promise(resolve => setTimeout(resolve, 500)); // Smaller number should work
+    wait
+      .then(() => {
+        // Jump to an item
+        this.scroller.scrollToLocation({
+          animated: true,
+          sectionIndex: index,
+          itemIndex: -1,
+          viewPosition: 0
+        });
+      })
+      .catch(err => {
+        console.log("scrollToLocation", err);
+      });
   };
   _getItemLayout(data, index) {
     let [length, separator, header] = [
