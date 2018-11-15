@@ -38,7 +38,6 @@ class ContactList extends PureComponent {
   constructor(props) {
     super(props);
     this.color = "";
-    this.groupRow = [];
     this.GroupColor = Colors.text;
     this.state = {
       sectionList: this.props.sectionList
@@ -103,13 +102,7 @@ class ContactList extends PureComponent {
     if (nextProps.navigation.state.params.check) {
       this.updateViewStyle();
     }
-    /*
-     * check if groupPos not  equal this.props.groupPos
-     * then  update  groupRow Array
-     */
-    if (nextProps.groupPos !== this.props.groupPos) {
-      this.groupRow = nextProps.groupPos;
-    }
+
   }
   updateViewStyle = () => {
     AsyncStorage.getItem("displayPhoto").then(value => {
