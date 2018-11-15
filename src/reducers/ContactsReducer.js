@@ -5,9 +5,9 @@ const INITIAL_STATE = {
   data: [],
   fullData: [],
   query: "",
-  scrolledTO:0,
-  groupPos:[],
-  sortBy:'givenName',
+  sortBy: "givenName",
+  displayPhoto: true,
+  viewAs: "givenName"
 };
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -20,7 +20,7 @@ export default (state = INITIAL_STATE, action) => {
         loading: false
       };
     case "refresh_list":
-      return { ...state, refreshing: true, query: "" ,loading:false};
+      return { ...state, refreshing: true, query: "", loading: false };
     case "searching":
       return {
         ...state,
@@ -36,20 +36,20 @@ export default (state = INITIAL_STATE, action) => {
         count: action.count,
         loading: false
       };
-    case "changePos":
-      return {
-        ...state,
-        scrolledTO:action.payload
-      };
-    case "changeGroup":
-      return {
-        ...state,
-        groupPos:action.payload
-      };
     case "ChangeSort":
       return {
         ...state,
-        sortBy:action.payload
+        sortBy: action.payload
+      };
+    case "ChangeviewAs":
+      return {
+        ...state,
+        viewAs: action.payload
+      };
+    case "ChangedisplayPhoto":
+      return {
+        ...state,
+        displayPhoto: action.payload
       };
 
     default:

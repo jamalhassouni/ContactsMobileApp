@@ -6,10 +6,12 @@ import { List, ListItem } from "react-native-elements";
 class Options extends Component {
   constructor(props) {
     super(props);
+    const SortBy = this.props.sortBy === "familyName" ? true : false;
+    const viewAs = this.props.viewAs === "familyName" ? true : false;
     this.state = {
-      sortValue: false,
-      displayPhoto: true,
-      viewAsFamilyName: false
+      sortValue: SortBy,
+      displayPhoto: this.props.displayPhoto,
+      viewAsFamilyName: viewAs
     };
   }
 
@@ -18,21 +20,25 @@ class Options extends Component {
     AsyncStorage.getItem("sortValue").then(value => {
       if (value == "yes") {
         this.setState({ sortValue: true });
-      } else if(value =="no") {
+      } else if (value == "no") {
         this.setState({ sortValue: false });
       }
     });
     AsyncStorage.getItem("displayPhoto").then(value => {
       if (value == "yes") {
+        this.props.ChangedisplayPhoto(true);
         this.setState({ displayPhoto: true });
-      } else if(value =="no" ) {
+      } else if (value == "no") {
+        this.props.ChangedisplayPhoto(false);
         this.setState({ displayPhoto: false });
       }
     });
     AsyncStorage.getItem("viewAsFamilyName").then(value => {
       if (value == "yes") {
+        this.props.ChangeviewAs("familyName");
         this.setState({ viewAsFamilyName: true });
-      } else if(value =="no") {
+      } else if (value == "no") {
+        this.props.ChangeviewAs("givenName");
         this.setState({ viewAsFamilyName: false });
       }
     });
@@ -46,8 +52,10 @@ class Options extends Component {
   handleSort = value => {
     this.setState({ sortValue: value });
     if (value) {
+      this.props.ChangeSortBy("familyName");
       AsyncStorage.setItem("sortValue", "yes");
     } else {
+      this.props.ChangeSortBy("givenName");
       AsyncStorage.setItem("sortValue", "no");
     }
   };
@@ -59,8 +67,10 @@ class Options extends Component {
   handlePhotos = value => {
     this.setState({ displayPhoto: value });
     if (value) {
+      this.props.ChangedisplayPhoto(true);
       AsyncStorage.setItem("displayPhoto", "yes");
     } else {
+      this.props.ChangedisplayPhoto(false);
       AsyncStorage.setItem("displayPhoto", "no");
     }
   };
@@ -72,8 +82,10 @@ class Options extends Component {
   handleViewAsFamilyName = value => {
     this.setState({ viewAsFamilyName: value });
     if (value) {
+      this.props.ChangeviewAs("familyName");
       AsyncStorage.setItem("viewAsFamilyName", "yes");
     } else {
+      this.props.ChangeviewAs("givenName");
       AsyncStorage.setItem("viewAsFamilyName", "no");
     }
   };
@@ -137,7 +149,10 @@ const styles = StyleSheet.create({
 
 const mapStateToProp = state => {
   return {
-    contacts: state.contacts.data
+    contacts: state.contacts.data,
+    sortBy: state.contacts.sortBy,
+    displayPhoto: state.contacts.displayPhoto,
+    viewAs: state.contacts.viewAs
   };
 };
 export default connect(

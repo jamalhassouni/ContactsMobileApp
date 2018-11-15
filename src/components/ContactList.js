@@ -41,13 +41,7 @@ class ContactList extends PureComponent {
     this.groupRow = [];
     this.GroupColor = Colors.text;
     this.state = {
-      enable: true,
-      displayPhoto: true,
-      sortValue: false,
-      viewAs: "givenName",
-      sectionList: this.props.sectionList,
-      isShow: false,
-      group: "A"
+      sectionList: this.props.sectionList
     };
   }
 
@@ -120,25 +114,23 @@ class ContactList extends PureComponent {
   updateViewStyle = () => {
     AsyncStorage.getItem("displayPhoto").then(value => {
       if (value == "yes") {
-        this.setState({ displayPhoto: true });
+        this.props.ChangedisplayPhoto(true);
       } else if (value == "no") {
-        this.setState({ displayPhoto: false });
+        this.props.ChangedisplayPhoto(false);
       }
     });
     AsyncStorage.getItem("sortValue").then(value => {
       if (value == "yes") {
         this.props.ChangeSortBy("familyName");
-        this.setState({ sortValue: true });
       } else if (value == "no") {
         this.props.ChangeSortBy("givenName");
-        this.setState({ sortValue: false });
       }
     });
     AsyncStorage.getItem("viewAsFamilyName").then(value => {
       if (value == "yes") {
-        this.setState({ viewAs: "familyName" });
+        this.props.ChangeviewAs("familyName");
       } else if (value == "no") {
-        this.setState({ viewAs: "givenName" });
+        this.props.ChangeviewAs("givenName");
       }
     });
   };
@@ -179,23 +171,9 @@ class ContactList extends PureComponent {
     this.props.SearchContacts(data, text);
   };
 
-  onScrollEnd = e => {
-    const layout = e.nativeEvent.contentOffset.y;
-    this.props.changePosition(layout);
-  };
-
-  handleScroll = nativeEvent => {
-    if (nativeEvent.contentOffset.y == this.props.scrolledTO) {
-      //console.log("yes > ");
-      //   this.backColor = "#ff7675";
-    } else {
-      //console.log('no <');
-      // this.backColor = "#00d2d3";
-    }
-  };
   // This side returns data such as A, 0
   _onSectionselect = (chapter, index) => {
-  // https://github.com/facebook/react-native/issues/13202#issuecomment-295134924
+    // https://github.com/facebook/react-native/issues/13202#issuecomment-295134924
     let wait = new Promise(resolve => setTimeout(resolve, 500)); // Smaller number should work
     wait
       .then(() => {
@@ -260,15 +238,8 @@ class ContactList extends PureComponent {
       return (
         <List containerStyle={styles.list}>
           <SectionList
-            // onViewableItemsChanged={this._onViewableItemsChanged}
             showsVerticalScrollIndicator={false}
             initialNumToRender={10}
-            onMomentumScrollEnd={e => this.onScrollEnd(e)}
-            onScrollEndDrag={e => this.onScrollEnd(e)}
-            onScroll={({ nativeEvent }) => this.handleScroll(nativeEvent)}
-            /* viewabilityConfig={{
-                itemVisiblePercentThreshold: 50 //means if 50% of the item is visible
-              }}*/
             style={{ width: width - 20 }}
             refreshControl={
               <RefreshControl
@@ -285,9 +256,9 @@ class ContactList extends PureComponent {
                 navigation={this.props.navigation}
                 item={item}
                 index={index}
-                viewAs={this.state.viewAs}
+                viewAs={this.props.viewAs}
                 section={section}
-                displayPhoto={this.state.displayPhoto}
+                displayPhoto={this.props.displayPhoto}
               />
             )}
             renderSectionHeader={({ section: { group } }) => (
@@ -357,9 +328,10 @@ const mapStateToProps = state => {
     refreshing: state.contacts.refreshing,
     query: state.contacts.query,
     loading: state.contacts.loading,
-    scrolledTO: state.contacts.scrolledTO,
     groupPos: state.contacts.groupPos,
     sortBy: state.contacts.sortBy,
+    displayPhoto: state.contacts.displayPhoto,
+    viewAs: state.contacts.viewAs,
     sectionList: getSectionList(state.contacts.data),
     sectionSize: getSectionListSize(state.contacts.data)
   };

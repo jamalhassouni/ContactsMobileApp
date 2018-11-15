@@ -10,16 +10,23 @@ export const RefreshList = () => {
     payload: null
   };
 };
-export const changePosition = (scrolledTO) => {
-  return {
-    type: "changePos",
-    payload: scrolledTO,
-  };
-};
+
 export const ChangeSortBy = (sortBy) => {
   return {
     type: "ChangeSort",
     payload: sortBy,
+  };
+};
+export const ChangeviewAs = (viewAs) => {
+  return {
+    type: "ChangeviewAs",
+    payload: viewAs,
+  };
+};
+export const ChangedisplayPhoto = (displayPhoto) => {
+  return {
+    type: "ChangedisplayPhoto",
+    payload: displayPhoto,
   };
 };
 export const ChangeGroupPosition = (groupPos) => {

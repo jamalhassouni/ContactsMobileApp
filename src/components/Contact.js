@@ -4,7 +4,8 @@ import {
   View,
   Linking,
   StyleSheet,
-  ActivityIndicator
+  ActivityIndicator,
+  InteractionManager
 } from "react-native";
 import { connect } from "react-redux";
 import * as action from "../actions";
@@ -29,8 +30,12 @@ class Contact extends PureComponent {
 
   // this method to navigate to the details page with selected contact
   onContactSelected = contact => {
-    this.props.selectContact(contact);
-    this.props.navigation.navigate("details");
+   // InteractionManager.runAfterInteractions(() => {
+        // ...long-running synchronous task...
+        this.props.selectContact(contact);
+        this.props.navigation.navigate("details");
+    //});
+
   };
 
   //enable or disable scroll on swipe
