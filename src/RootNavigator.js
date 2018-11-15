@@ -1,7 +1,6 @@
 import React from "react";
-import { Platform, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { createStackNavigator } from "react-navigation";
-import ContactsComponent from "./components/Contacts";
 import ContactList from "./components/ContactList";
 import Details from "./components/Details";
 import Options from "./components/Options";
@@ -52,7 +51,7 @@ const transitionConfig = () => {
     }
   };
 };
-//height: Platform.OS === 'ios' ? 70 :  70 - 24
+
 const Routes = createStackNavigator(
   {
     contacts: {
@@ -112,7 +111,7 @@ const Routes = createStackNavigator(
               color: Colors.white,
               underlayColor: "rgba(255,255,255,0)",
               onPress: () => {
-                navigation.navigate("contacts",{check:false});
+                navigation.navigate("contacts");
               }
             }}
           />

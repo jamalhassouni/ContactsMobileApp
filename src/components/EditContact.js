@@ -313,7 +313,8 @@ class EditContact extends Component {
       toValue: 0,
       //velocity: 3,
       //tension: 2,
-      duration: 300
+      duration: 300,
+      useNativeDriver: true,
       //friction: 8
     }).start();
   }
@@ -323,7 +324,8 @@ class EditContact extends Component {
       toValue: height,
       //velocity: 3,
       //tension: 2,
-      duration: 300
+      duration: 300,
+      useNativeDriver: true,
       //friction: 8
     }).start();
   }

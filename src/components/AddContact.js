@@ -60,7 +60,6 @@ class AddContact extends Component {
   onBack = () => {
     if (this.state.editing) {
       this.openModalButtom("confirmBack");
-      console.log("yes show ");
     } else {
       this.props.navigation.navigate("contacts");
     }
@@ -323,7 +322,8 @@ class AddContact extends Component {
       toValue: 0,
       //velocity: 3,
       //tension: 2,
-      duration: 300
+      duration: 300,
+      useNativeDriver: true,
       //friction: 8
     }).start();
   }
@@ -333,7 +333,8 @@ class AddContact extends Component {
       toValue: height,
       //velocity: 3,
       //tension: 2,
-      duration: 300
+      duration: 300,
+      useNativeDriver: true,
       //friction: 8
     }).start();
   }
@@ -342,6 +343,8 @@ class AddContact extends Component {
     return (
       <View style={styles.avatar}>
         <Image
+          height={46}
+          width={46}
           style={styles.image}
           resizeMode="cover"
           source={require("../assets/user.jpg")}

@@ -19,8 +19,7 @@ import {
   uniqueList,
   _contains,
   groupArrayByFirstChar,
-  getSectionList,
-  getSectionListSize
+  getSectionList
 } from "./common/Helper";
 import { FloatingMenu } from "./common";
 import { List, SearchBar } from "react-native-elements";
@@ -44,7 +43,7 @@ class ContactList extends PureComponent {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.updateViewStyle();
     /**
      *  check if paltform is android
@@ -326,7 +325,6 @@ const mapStateToProps = state => {
     displayPhoto: state.contacts.displayPhoto,
     viewAs: state.contacts.viewAs,
     sectionList: getSectionList(state.contacts.data),
-    sectionSize: getSectionListSize(state.contacts.data)
   };
 };
 

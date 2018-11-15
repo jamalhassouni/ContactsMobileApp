@@ -86,6 +86,9 @@ class Details extends Component {
       }
     });
   }
+  onAddEdit(){
+    this.props.navigation.navigate("EditContact")
+  }
   //FIXME: fix confrim modal when  add birthday
   onBack = () => {
     this.props.navigation.navigate("contacts");
@@ -121,14 +124,16 @@ class Details extends Component {
     this.closeModalBottom();
     Animated.timing(this.state.modalY, {
       duration: 300,
-      toValue: 0
+      toValue: 0,
+      useNativeDriver: true,
     }).start();
   }
 
   closeModalTop() {
     Animated.timing(this.state.modalY, {
       duration: 300,
-      toValue: -height
+      toValue: -height,
+      useNativeDriver: true,
     }).start();
   }
   renderDivider = () => {
@@ -151,7 +156,8 @@ class Details extends Component {
       toValue: 0,
       //velocity: 3,
       //tension: 2,
-      duration: 300
+      duration: 300,
+      useNativeDriver: true,
       //friction: 8
     }).start();
   }
@@ -161,7 +167,8 @@ class Details extends Component {
       toValue: height,
       //velocity: 3,
       //tension: 2,
-      duration: 300
+      duration: 300,
+      useNativeDriver: true,
       //friction: 8
     }).start();
   }
@@ -315,7 +322,7 @@ class Details extends Component {
           icon="edit"
           size={18}
           backgroundColor={colors[0]}
-          onPress={() => this.props.navigation.navigate("EditContact")}
+          onPress={this.onAddEdit.bind(this)}
         />
         {ModalTop}
         {ModalBottom}

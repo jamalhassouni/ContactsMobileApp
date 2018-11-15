@@ -15,7 +15,7 @@ class Options extends Component {
     };
   }
 
-  componentWillMount() {
+  componentDidMount() {
     // get data from Storage
     AsyncStorage.getItem("sortValue").then(value => {
       if (value == "yes") {
@@ -106,7 +106,6 @@ class Options extends Component {
             containerStyle={{ borderBottomWidth: 0 }}
           />
           <ListItem
-            onPress={() => console.log("cliked")}
             switchButton
             hideChevron
             trackColor={"#00BCD4"}
