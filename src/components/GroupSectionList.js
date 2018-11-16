@@ -8,7 +8,7 @@ export default class GroupSectionList extends PureComponent {
     super(props, context);
 
     this.lastSelectedIndex = null;
-    this.state = { text: "", isShow: false,active:0 };
+    this.state = { text: "", isShow: false, active: 0 };
   }
 
   render() {
@@ -39,7 +39,7 @@ export default class GroupSectionList extends PureComponent {
   _getSections = () => {
     let array = new Array();
     for (let i = 0; i < this.props.sections.length; i++) {
-     const ActiveColor = this.state.active==i ?  Colors.blue : Colors.text;
+      const ActiveColor = this.state.active == i ? Colors.blue : Colors.text;
       array.push(
         <View
           style={styles.sectionView}
@@ -47,7 +47,9 @@ export default class GroupSectionList extends PureComponent {
           key={i}
           ref={"sectionItem" + i}
         >
-          <Text style={[styles.sectionItem,{color:ActiveColor}]}>{this.props.sections[i]}</Text>
+          <Text style={[styles.sectionItem, { color: ActiveColor }]}>
+            {this.props.sections[i]}
+          </Text>
         </View>
       );
     }
@@ -95,7 +97,7 @@ export default class GroupSectionList extends PureComponent {
     }
     let index = Math.floor((targetY - y) / height);
     index = Math.min(index, this.props.sections.length - 1);
-     this.setState({active:index});
+    this.setState({ active: index });
     if (
       this.lastSelectedIndex !== index &&
       index < this.props.sections.length
@@ -126,8 +128,7 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
-    left: 0,
-
+    left: 0
   },
 
   modelView: {
@@ -139,8 +140,7 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
-    left: 0,
-
+    left: 0
   },
 
   viewShow: {
@@ -167,17 +167,17 @@ const styles = StyleSheet.create({
     bottom: 0,
     paddingTop: 50,
     paddingBottom: 50,
-    width: 15,
+    width: 15
   },
 
   sectionView: {
     justifyContent: "center",
     alignItems: "center",
-    flex: 1,
+    flex: 1
   },
 
   sectionItem: {
     fontSize: 12,
-    fontWeight: '300',
+    fontWeight: "300"
   }
 });
