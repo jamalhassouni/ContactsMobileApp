@@ -1,5 +1,6 @@
 import React, { PureComponent } from "react";
 import { Text, View, StyleSheet } from "react-native";
+import Colors from "./common/Colors";
 const returnTrue = () => true;
 
 export default class GroupSectionList extends PureComponent {
@@ -7,7 +8,7 @@ export default class GroupSectionList extends PureComponent {
     super(props, context);
 
     this.lastSelectedIndex = null;
-    this.state = { text: "", isShow: false };
+    this.state = { text: "", isShow: false,active:0 };
   }
 
   render() {
@@ -38,6 +39,7 @@ export default class GroupSectionList extends PureComponent {
   _getSections = () => {
     let array = new Array();
     for (let i = 0; i < this.props.sections.length; i++) {
+     const ActiveColor = this.state.active==i ?  Colors.blue : Colors.text;
       array.push(
         <View
           style={styles.sectionView}
@@ -45,7 +47,7 @@ export default class GroupSectionList extends PureComponent {
           key={i}
           ref={"sectionItem" + i}
         >
-          <Text style={styles.sectionItem}>{this.props.sections[i]}</Text>
+          <Text style={[styles.sectionItem,{color:ActiveColor}]}>{this.props.sections[i]}</Text>
         </View>
       );
     }
@@ -93,6 +95,7 @@ export default class GroupSectionList extends PureComponent {
     }
     let index = Math.floor((targetY - y) / height);
     index = Math.min(index, this.props.sections.length - 1);
+     this.setState({active:index});
     if (
       this.lastSelectedIndex !== index &&
       index < this.props.sections.length
@@ -174,6 +177,7 @@ const styles = StyleSheet.create({
   },
 
   sectionItem: {
-    fontSize: 12
+    fontSize: 12,
+    fontWeight: '300',
   }
 });
