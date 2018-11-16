@@ -334,6 +334,8 @@ class EditContact extends Component {
     return (
       <View style={styles.avatar}>
         <Image
+          height={46}
+          width={46}
           style={styles.image}
           resizeMode="cover"
           source={require("../assets/user.jpg")}
