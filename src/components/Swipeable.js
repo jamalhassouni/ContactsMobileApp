@@ -4,7 +4,8 @@ import {
   StyleSheet,
   Animated,
   Dimensions,
-  PanResponder
+  PanResponder,
+  Vibration
 } from "react-native";
 
 const { width } = Dimensions.get("window");
@@ -39,10 +40,12 @@ export default class Swipeable extends React.PureComponent {
           let newX = gestureState.dx + -this.gestureDelay;
           position.setValue({ x: newX, y: 0 });
         }
+        Vibration.cancel()
       },
       onPanResponderRelease: (evt, gestureState) => {
         // left swipe
         if (gestureState.dx >= 100) {
+          Vibration.vibrate(100);
           Animated.timing(this.state.position, {
             toValue: { x: width - 10, y: 0 },
             duration: 300
@@ -53,6 +56,7 @@ export default class Swipeable extends React.PureComponent {
           });
           // right swipe
         } else if (gestureState.dx <= -100) {
+          Vibration.vibrate(100);
           Animated.timing(this.state.position, {
             toValue: { x: -width + 10, y: 0 },
             duration: 300
